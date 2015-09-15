@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -16,7 +17,10 @@ namespace BambooHrClient.Demo
             DisplayEmployeeInfos();
             Console.WriteLine();
 
-            DisplayEmployeeInfo("youremail@yourcompany.com");
+            DisplayEmployeeInfo("rwertman@stackoverflow.com");
+            Console.WriteLine();
+
+            GetEmployeePhoto(123456789);
             Console.WriteLine();
 
             // THIS WILL CREATE AN ACTUAL TIME OFF REQUEST IN YOUR SYSTEM
@@ -50,6 +54,15 @@ namespace BambooHrClient.Demo
             // Display the details of the last employee in the list to compare to the regular GetEmployee call
             Console.WriteLine();
             Console.WriteLine(employees.Last());
+        }
+
+        private async static void GetEmployeePhoto(int employeeId)
+        {
+            var bambooHrClient = new BambooHrClient();
+
+            var fileData = await bambooHrClient.GetEmployeePhoto(employeeId);
+
+            File.WriteAllBytes(@"C:\test.jpeg", fileData);
         }
 
         public async static void ListHolidays()

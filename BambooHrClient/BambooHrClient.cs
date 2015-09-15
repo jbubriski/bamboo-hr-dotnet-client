@@ -19,6 +19,7 @@ namespace BambooHrClient
         Task<List<BambooHrEmployee>> GetEmployees();
         Task<BambooHrEmployee> GetEmployee(int employeeId);
         Task<BambooHrEmployee> GetEmployee(string email);
+        Task<Byte[]> GetEmployeePhoto(int employeeId, string size = "small");
         Task<bool> CancelTimeOffRequest(int timeOffRequestId, string reason = null);
         Task<List<BambooHrHoliday>> GetHolidays(DateTime startDate, DateTime endDate);
     }
@@ -371,6 +372,51 @@ namespace BambooHrClient
             throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
         }
 
+        public async Task<Byte[]> GetEmployeePhoto(int employeeId, string size = "small")
+        {
+            var url = string.Format("/employees/{0}/photo/{1}", employeeId, size);
+
+            var restClient = GetNewRestClient();
+            var request = GetNewRestRequest(url, Method.GET, true);
+
+            IRestResponse response;
+
+            try
+            {
+                response = await restClient.ExecuteTaskAsync(request);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(string.Format("Error executing Bamboo request to {0} for employee ID {1}", url, employeeId), ex);
+            }
+
+            if (response.ErrorException != null)
+            {
+                throw new Exception(string.Format("Error executing Bamboo request to {0} for employee ID {1}", url, employeeId), response.ErrorException);
+            }
+
+            if (string.IsNullOrWhiteSpace(response.Content))
+            {
+                throw new Exception(string.Format("Empty Response to Request from BambooHR, Code: {0} and employee ID {1}", response.StatusCode, employeeId));
+            }
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var fileData = response.RawBytes;
+
+                if (fileData != null)
+                {
+                    return fileData;
+                }
+
+                throw new Exception("Bamboo Response does not contain file data");
+            }
+
+            var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
+            var errorMessage = error != null ? ": " + error.Value : string.Empty;
+            throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
+        }
+
         public async Task<bool> CancelTimeOffRequest(int timeOffRequestId, string reason = null)
         {
             var url = string.Format("time_off/requests/{0}/status/", timeOffRequestId);
@@ -511,12 +557,15 @@ namespace BambooHrClient
             };
         }
 
-        private RestRequest GetNewRestRequest(string url, Method method, bool sendingJson)
+        private RestRequest GetNewRestRequest(string url, Method method, bool sendingJson, bool binary = false)
         {
             var request = new RestRequest(url, method);
 
-            request.AddHeader("Accept", "application/json");
-            request.AddHeader("Encoding", "utf-8");
+            if (!binary)
+            {
+                request.AddHeader("Accept", "application/json");
+                request.AddHeader("Encoding", "utf-8");
+            }
 
             if (sendingJson)
             {
