@@ -20,7 +20,10 @@ namespace BambooHrClient.Demo
             DisplayEmployeeInfo("rwertman@stackoverflow.com");
             Console.WriteLine();
 
-            GetEmployeePhoto(123456789);
+            //GetEmployeePhoto(123456789);
+            //Console.WriteLine();
+
+            Task.WaitAll(DisplayFields());
             Console.WriteLine();
 
             // THIS WILL CREATE AN ACTUAL TIME OFF REQUEST IN YOUR SYSTEM
@@ -63,6 +66,18 @@ namespace BambooHrClient.Demo
             var fileData = await bambooHrClient.GetEmployeePhoto(employeeId);
 
             File.WriteAllBytes(@"C:\test.jpeg", fileData);
+        }
+
+        private async static Task DisplayFields()
+        {
+            var bambooHrClient = new BambooHrClient();
+
+            var fields = await bambooHrClient.GetFields();
+
+            foreach (var field in fields)
+            {
+                Console.WriteLine(field);
+            }
         }
 
         public async static void ListHolidays()

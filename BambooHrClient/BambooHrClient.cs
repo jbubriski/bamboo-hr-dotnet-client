@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
+using BambooHrClient.Models;
 using RestSharp;
 using RestSharp.Authenticators;
 
@@ -22,6 +23,8 @@ namespace BambooHrClient
         Task<Byte[]> GetEmployeePhoto(int employeeId, string size = "small");
         Task<bool> CancelTimeOffRequest(int timeOffRequestId, string reason = null);
         Task<List<BambooHrHoliday>> GetHolidays(DateTime startDate, DateTime endDate);
+
+        Task<BambooHrField[]> GetFields();
     }
 
     public class BambooHrClient : IBambooHrClient
@@ -512,6 +515,52 @@ namespace BambooHrClient
             }
 
             return dates.ToString();
+        }
+
+        public async Task<BambooHrField[]> GetFields()
+        {
+            const string url = "/meta/fields/";
+
+            var restClient = GetNewRestClient();
+            var request = GetNewRestRequest(url, Method.GET, true);
+
+            IRestResponse response;
+
+            try
+            {
+                response = await restClient.ExecuteTaskAsync(request);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(string.Format("Error executing Bamboo request to {0}", url), ex);
+            }
+
+            if (response.ErrorException != null)
+            {
+                throw new Exception(string.Format("Error executing Bamboo request to {0}", url), response.ErrorException);
+            }
+
+            if (string.IsNullOrWhiteSpace(response.Content))
+            {
+                throw new Exception(string.Format("Empty Response to Request from BambooHR, Code: {0}", response.StatusCode));
+            }
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var raw = response.Content.Replace("Date\":\"0000-00-00\"", "Date\":null").RemoveTroublesomeCharacters();
+                var package = raw.FromJson<BambooHrField[]>();
+
+                if (package != null && package.Any())
+                {
+                    return package;
+                }
+
+                throw new Exception("Bamboo Response does not contain file data");
+            }
+
+            var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
+            var errorMessage = error != null ? ": " + error.Value : string.Empty;
+            throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
         }
 
         private Dictionary<DateTime, int> GetDateHours(DateTime startDate, DateTime endDate, bool startHalfDay, bool endHalfDay, List<DateTime> holidays)
