@@ -48,13 +48,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BambooHrClient.cs" />
-    <Compile Include="BambooHrEmployee.cs" />
-    <Compile Include="BambooHrHoliday.cs" />
+    <Compile Include="Models\BambooHrClient.cs" />
+    <Compile Include="Models\BambooHrEmployee.cs" />
+    <Compile Include="Models\BambooHrHoliday.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Models\BambooHrField.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="BambooHrTimeOffRequest.cs" />
+    <Compile Include="Models\BambooHrTimeOffRequest.cs" />
     <Compile Include="TextExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
