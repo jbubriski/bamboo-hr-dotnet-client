@@ -108,7 +108,6 @@ namespace BambooHrClient
             var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
             var errorMessage = error != null ? ": " + error.Value : string.Empty;
             throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
-            // TODO: More data
             //.AddLoggedData("Response", response.Content);
         }
 
@@ -156,8 +155,6 @@ namespace BambooHrClient
             var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
             var errorMessage = error != null ? ": " + error.Value : string.Empty;
             throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
-            // TODO: Include more data
-            //.AddLoggedData("Response", response.Content).AddLoggedData("timeOffRequestId", timeOffRequestId);
         }
 
         public async Task<BambooHrEmployee> GetEmployee(string workEmail)
@@ -170,7 +167,7 @@ namespace BambooHrClient
         }
 
         /// <summary>
-        /// You must call ApproveTimeOffRequest after calling this method if you want the request to actually be approved.
+        /// Creates an approved Time Off Request in BambooHR.  Optionally, you can specify half days which reduces the respective day to 4 hours, comments, a list of holidays to skip, and a previous Time Off Request ID to supersede.
         /// </summary>
         /// <param name="employeeId"></param>
         /// <param name="timeOffTypeId"></param>
@@ -238,8 +235,6 @@ namespace BambooHrClient
             var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
             var errorMessage = error != null ? ": " + error.Value : string.Empty;
             throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
-            // TODO: Include more data
-            // .AddLoggedData("Response", response.Content).AddLoggedData("EmployeeId", employeeId);
         }
 
         private async Task<bool> AddTimeOffRequestHistoryEntry(int employeeId, int timeOffRequestId, DateTime date)
@@ -278,8 +273,6 @@ namespace BambooHrClient
             var errorMessage = error != null ? ": " + error.Value : string.Empty;
 
             throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
-            // TODO: Include more data
-            //.AddLoggedData("Response", response.Content).AddLoggedData("EmployeeId", employeeId).AddLoggedData("TimeOffRequestId", timeOffRequestId);
         }
 
         public async Task<List<BambooHrTimeOffRequest>> GetTimeOffRequests(int employeeId)
@@ -328,8 +321,6 @@ namespace BambooHrClient
             var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
             var errorMessage = error != null ? ": " + error.Value : string.Empty;
             throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
-            // TODO: Include more data
-            //.AddLoggedData("Response", response.Content).AddLoggedData("EmployeeId", employeeId);
         }
 
         public async Task<BambooHrTimeOffRequest> GetTimeOffRequest(int timeOffRequestId)
@@ -378,8 +369,6 @@ namespace BambooHrClient
             var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
             var errorMessage = error != null ? ": " + error.Value : string.Empty;
             throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
-            // TODO: Include more data
-            //.AddLoggedData("Response", response.Content).AddLoggedData("timeOffRequestId", timeOffRequestId);
         }
 
         public async Task<bool> CancelTimeOffRequest(int timeOffRequestId, string reason = null)
@@ -415,8 +404,6 @@ namespace BambooHrClient
             var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
             var errorMessage = error != null ? ": " + error.Value : string.Empty;
             throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
-            // TODO: Include more data
-            //.AddLoggedData("Response", response.Content).AddLoggedData("TimeOffRequestId", timeOffRequestId);
         }
 
         public async Task<List<BambooHrHoliday>> GetHolidays(DateTime startDate, DateTime endDate)
@@ -465,8 +452,6 @@ namespace BambooHrClient
             var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
             var errorMessage = error != null ? ": " + error.Value : string.Empty;
             throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
-            // TODO: Include more data
-            //.AddLoggedData("Response", response.Content).AddLoggedData("startDate", startDate).AddLoggedData("endDate", endDate);
         }
 
         public string GetDatesXml(DateTime startDate, DateTime endDate, bool startHalfDay, bool endHalfDay, List<DateTime> holidays)
