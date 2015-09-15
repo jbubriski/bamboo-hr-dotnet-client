@@ -167,6 +167,51 @@ namespace BambooHrClient
             return employee;
         }
 
+        public async Task<Byte[]> GetEmployeePhoto(int employeeId, string size = "small")
+        {
+            var url = string.Format("/employees/{0}/photo/{1}", employeeId, size);
+
+            var restClient = GetNewRestClient();
+            var request = GetNewRestRequest(url, Method.GET, true);
+
+            IRestResponse response;
+
+            try
+            {
+                response = await restClient.ExecuteTaskAsync(request);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(string.Format("Error executing Bamboo request to {0} for employee ID {1}", url, employeeId), ex);
+            }
+
+            if (response.ErrorException != null)
+            {
+                throw new Exception(string.Format("Error executing Bamboo request to {0} for employee ID {1}", url, employeeId), response.ErrorException);
+            }
+
+            if (string.IsNullOrWhiteSpace(response.Content))
+            {
+                throw new Exception(string.Format("Empty Response to Request from BambooHR, Code: {0} and employee ID {1}", response.StatusCode, employeeId));
+            }
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var fileData = response.RawBytes;
+
+                if (fileData != null)
+                {
+                    return fileData;
+                }
+
+                throw new Exception("Bamboo Response does not contain file data");
+            }
+
+            var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
+            var errorMessage = error != null ? ": " + error.Value : string.Empty;
+            throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
+        }
+
         /// <summary>
         /// Creates an approved Time Off Request in BambooHR.  Optionally, you can specify half days which reduces the respective day to 4 hours, comments, a list of holidays to skip, and a previous Time Off Request ID to supersede.
         /// </summary>
@@ -365,51 +410,6 @@ namespace BambooHrClient
                 }
 
                 throw new Exception("Bamboo Response does not contain Employees collection");
-            }
-
-            var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
-            var errorMessage = error != null ? ": " + error.Value : string.Empty;
-            throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
-        }
-
-        public async Task<Byte[]> GetEmployeePhoto(int employeeId, string size = "small")
-        {
-            var url = string.Format("/employees/{0}/photo/{1}", employeeId, size);
-
-            var restClient = GetNewRestClient();
-            var request = GetNewRestRequest(url, Method.GET, true);
-
-            IRestResponse response;
-
-            try
-            {
-                response = await restClient.ExecuteTaskAsync(request);
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(string.Format("Error executing Bamboo request to {0} for employee ID {1}", url, employeeId), ex);
-            }
-
-            if (response.ErrorException != null)
-            {
-                throw new Exception(string.Format("Error executing Bamboo request to {0} for employee ID {1}", url, employeeId), response.ErrorException);
-            }
-
-            if (string.IsNullOrWhiteSpace(response.Content))
-            {
-                throw new Exception(string.Format("Empty Response to Request from BambooHR, Code: {0} and employee ID {1}", response.StatusCode, employeeId));
-            }
-
-            if (response.StatusCode == HttpStatusCode.OK)
-            {
-                var fileData = response.RawBytes;
-
-                if (fileData != null)
-                {
-                    return fileData;
-                }
-
-                throw new Exception("Bamboo Response does not contain file data");
             }
 
             var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
