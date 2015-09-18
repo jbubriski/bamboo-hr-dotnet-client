@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace BambooHrClient
+namespace BambooHrClient.Models
 {
     public class DirectoryResponse
     {

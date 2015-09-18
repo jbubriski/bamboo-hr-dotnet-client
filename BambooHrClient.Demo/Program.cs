@@ -36,6 +36,9 @@ namespace BambooHrClient.Demo
             //Task.WaitAll(DisplayTimeOffPolicies());
             //Console.WriteLine();
 
+            //Task.WaitAll(DisplayUsers());
+            //Console.WriteLine();
+
             // THIS WILL CREATE AN ACTUAL TIME OFF REQUEST IN YOUR SYSTEM
             //CreateTimeOffRequest();
 
@@ -128,6 +131,18 @@ namespace BambooHrClient.Demo
             foreach (var timeOffPolicy in timeOffPolicies)
             {
                 Console.WriteLine(timeOffPolicy.PropsToString());
+            }
+        }
+
+        public async static Task DisplayUsers()
+        {
+            var bambooHrClient = new BambooHrClient();
+
+            var users = await bambooHrClient.GetUsers();
+
+            foreach (var user in users)
+            {
+                Console.WriteLine(user.PropsToString());
             }
         }
         

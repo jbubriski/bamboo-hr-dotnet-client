@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace BambooHrClient
+namespace BambooHrClient.Models
 {
     public class BambooHrTimeOffRequest
     {
