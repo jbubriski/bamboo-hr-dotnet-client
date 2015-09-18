@@ -18,9 +18,6 @@ namespace BambooHrClient.Demo
             //DisplayEmployeeInfos();
             //Console.WriteLine();
 
-            //DisplayEmployeeInfo("rwertman@stackoverflow.com");
-            //Console.WriteLine();
-
             //GetEmployeePhoto(123456789);
             //Console.WriteLine();
 
@@ -45,15 +42,6 @@ namespace BambooHrClient.Demo
             Console.WriteLine();
             Console.WriteLine("Press enter to exit");
             Console.ReadLine();
-        }
-
-        private async static void DisplayEmployeeInfo(string workEmail)
-        {
-            var bambooHrClient = new BambooHrClient();
-
-            var employee = await bambooHrClient.GetEmployee(workEmail);
-
-            Console.WriteLine(employee.PropsToString());
         }
 
         private async static void DisplayEmployeeInfos()
@@ -157,7 +145,7 @@ namespace BambooHrClient.Demo
 
         public async static Task<int> CreateTimeOffRequest()
         {
-            var userName = "jsmith";
+            var userId = 5;
             var reason = "vacation";
             var startDate = DateTime.Now;
             var endDate = DateTime.Now.AddDays(1);
@@ -166,7 +154,7 @@ namespace BambooHrClient.Demo
 
             var bambooHrClient = new BambooHrClient();
 
-            var employee = bambooHrClient.GetEmployee(userName);
+            var employee = bambooHrClient.GetEmployee(userId);
 
             return await bambooHrClient.CreateTimeOffRequest(employee.Id, timeOffTypeId, startDate, endDate);
         }

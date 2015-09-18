@@ -21,7 +21,6 @@ namespace BambooHrClient
         Task<int> CreateTimeOffRequest(int employeeId, int timeOffTypeId, DateTime startDate, DateTime endDate, bool startHalfDay = false, bool endHalfDay = false, string comment = null, List<DateTime> holidays = null, int? previousTimeOffRequestId = null);
         Task<List<BambooHrEmployee>> GetEmployees();
         Task<BambooHrEmployee> GetEmployee(int employeeId);
-        Task<BambooHrEmployee> GetEmployee(string email);
         Task<Byte[]> GetEmployeePhoto(int employeeId, string size = "small");
         Task<bool> CancelTimeOffRequest(int timeOffRequestId, string reason = null);
         Task<List<BambooHrHoliday>> GetHolidays(DateTime startDate, DateTime endDate);
@@ -86,7 +85,7 @@ namespace BambooHrClient
 
             try
             {
-                response = restClient.Execute(request);
+                response = await restClient.ExecuteTaskAsync(request);
             }
             catch (Exception ex)
             {
@@ -94,9 +93,7 @@ namespace BambooHrClient
             }
 
             if (response.ErrorException != null)
-            {
                 throw new Exception("Error executing Bamboo request to " + url, response.ErrorException);
-            }
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
@@ -116,7 +113,6 @@ namespace BambooHrClient
             var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
             var errorMessage = error != null ? ": " + error.Value : string.Empty;
             throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
-            //.AddLoggedData("Response", response.Content);
         }
 
         public async Task<BambooHrEmployee> GetEmployee(int employeeId)
@@ -138,14 +134,10 @@ namespace BambooHrClient
             }
 
             if (response.ErrorException != null)
-            {
                 throw new Exception(string.Format("Error executing Bamboo request to {0} for employee ID {1}", url, employeeId), response.ErrorException);
-            }
 
             if (string.IsNullOrWhiteSpace(response.Content))
-            {
                 throw new Exception(string.Format("Empty Response to Request from BambooHR, Code: {0} and employee id {1}", response.StatusCode, employeeId));
-            }
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
@@ -163,15 +155,6 @@ namespace BambooHrClient
             var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
             var errorMessage = error != null ? ": " + error.Value : string.Empty;
             throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
-        }
-
-        public async Task<BambooHrEmployee> GetEmployee(string workEmail)
-        {
-            var employees = await GetEmployees();
-
-            var employee = employees.Single(e => e.WorkEmail == workEmail);
-
-            return employee;
         }
 
         public async Task<Byte[]> GetEmployeePhoto(int employeeId, string size = "small")
