@@ -1,4 +1,4 @@
-# PandaBear BambooHR .NET Client
+# BambooHR .NET Client
 
 A .NET client for the BambooHR REST API.
 
