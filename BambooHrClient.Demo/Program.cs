@@ -36,6 +36,9 @@ namespace BambooHrClient.Demo
             //Task.WaitAll(DisplayTimeOffTypesByPermissions());
             //Console.WriteLine();
 
+            //Task.WaitAll(DisplayTimeOffPolicies());
+            //Console.WriteLine();
+
             // THIS WILL CREATE AN ACTUAL TIME OFF REQUEST IN YOUR SYSTEM
             //CreateTimeOffRequest();
 
@@ -128,6 +131,18 @@ namespace BambooHrClient.Demo
             }
         }
 
+        public async static Task DisplayTimeOffPolicies()
+        {
+            var bambooHrClient = new BambooHrClient();
+
+            var timeOffPolicies = await bambooHrClient.GetTimeOffPolicies();
+
+            foreach (var timeOffPolicy in timeOffPolicies)
+            {
+                Console.WriteLine(timeOffPolicy.PropsToString());
+            }
+        }
+        
         public async static void ListHolidays()
         {
             var bambooHrClient = new BambooHrClient();

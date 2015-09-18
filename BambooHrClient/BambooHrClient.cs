@@ -28,6 +28,7 @@ namespace BambooHrClient
 
         Task<BambooHrField[]> GetFields();
         Task<BambooHrTimeOffTypeInfo> GetTimeOffTypes(string mode = "");
+        Task<BambooHrTimeOffPolicy[]> GetTimeOffPolicies();
     }
 
     public class BambooHrClient : IBambooHrClient
@@ -574,9 +575,7 @@ namespace BambooHrClient
             var request = GetNewRestRequest(url, Method.GET, true);
 
             if (!string.IsNullOrWhiteSpace(mode))
-            {
                 request.AddParameter("mode", mode, ParameterType.GetOrPost);
-            }
 
             IRestResponse response;
 
@@ -590,14 +589,10 @@ namespace BambooHrClient
             }
 
             if (response.ErrorException != null)
-            {
                 throw new Exception(string.Format("Error executing Bamboo request to {0}", url), response.ErrorException);
-            }
 
             if (string.IsNullOrWhiteSpace(response.Content))
-            {
                 throw new Exception(string.Format("Empty Response to Request from BambooHR, Code: {0}", response.StatusCode));
-            }
 
             if (response.StatusCode == HttpStatusCode.OK)
             {
@@ -611,6 +606,46 @@ namespace BambooHrClient
 
                     return package;
                 }
+
+                throw new Exception("Bamboo Response does not contain data");
+            }
+
+            var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
+            var errorMessage = error != null ? ": " + error.Value : string.Empty;
+            throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
+        }
+
+        public async Task<BambooHrTimeOffPolicy[]> GetTimeOffPolicies()
+        {
+            const string url = "/meta/time_off/policies/";
+
+            var restClient = GetNewRestClient();
+            var request = GetNewRestRequest(url, Method.GET, true);
+
+            IRestResponse response;
+
+            try
+            {
+                response = await restClient.ExecuteTaskAsync(request);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(string.Format("Error executing Bamboo request to {0}", url), ex);
+            }
+
+            if (response.ErrorException != null)
+                throw new Exception(string.Format("Error executing Bamboo request to {0}", url), response.ErrorException);
+
+            if (string.IsNullOrWhiteSpace(response.Content))
+                throw new Exception(string.Format("Empty Response to Request from BambooHR, Code: {0}", response.StatusCode));
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var raw = response.Content.Replace("Date\":\"0000-00-00\"", "Date\":null").RemoveTroublesomeCharacters();
+                var package = raw.FromJson<BambooHrTimeOffPolicy[]>();
+
+                if (package != null)
+                    return package;
 
                 throw new Exception("Bamboo Response does not contain data");
             }

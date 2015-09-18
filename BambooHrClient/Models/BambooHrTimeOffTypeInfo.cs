@@ -31,4 +31,12 @@ namespace BambooHrClient.Models
         public string Name { get; set; }
         public int Amount { get; set; }
     }
+
+    public class BambooHrTimeOffPolicy
+    {
+        public int Id { get; set; }
+        public int TimeOffTypeId { get; set; }
+        public string Name { get; set; }
+        public DateTime EffectiveDate { get; set; }
+    }
 }
