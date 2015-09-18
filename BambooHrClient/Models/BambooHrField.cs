@@ -10,21 +10,7 @@ namespace BambooHrClient.Models
     {
         public string Id { get; set; }
         public string Type { get; set; }
+        public string Name { get; set; }
         public string Alias { get; set; }
-
-        public override string ToString()
-        {
-            var propertyInfos = GetType().GetProperties();
-
-            var sb = new StringBuilder();
-
-            foreach (var info in propertyInfos)
-            {
-                var value = info.GetValue(this, null) ?? "(null)";
-                sb.AppendLine(info.Name + ": " + value);
-            }
-
-            return sb.ToString();
-        }
     }
 }

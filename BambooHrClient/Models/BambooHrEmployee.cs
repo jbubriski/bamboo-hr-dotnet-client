@@ -73,20 +73,5 @@ namespace BambooHrClient
                 return FirstName + " " + LastName;
             }
         }
-
-        public override string ToString()
-        {
-            var propertyInfos = GetType().GetProperties();
-
-            var sb = new StringBuilder();
-
-            foreach (var info in propertyInfos)
-            {
-                var value = info.GetValue(this, null) ?? "(null)";
-                sb.AppendLine(info.Name + ": " + value);
-            }
-
-            return sb.ToString();
-        }
     }
 }

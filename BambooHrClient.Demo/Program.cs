@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using BambooHrClient.Extensions;
 
 namespace BambooHrClient.Demo
 {
@@ -9,22 +10,31 @@ namespace BambooHrClient.Demo
     {
         static void Main(string[] args)
         {
-            ListHolidays();
-            Console.WriteLine();
+            // Uncomment the following examples to try them out
 
-            // Uncomment the following examples
+            //ListHolidays();
+            //Console.WriteLine();
 
-            DisplayEmployeeInfos();
-            Console.WriteLine();
+            //DisplayEmployeeInfos();
+            //Console.WriteLine();
 
-            DisplayEmployeeInfo("rwertman@stackoverflow.com");
-            Console.WriteLine();
+            //DisplayEmployeeInfo("rwertman@stackoverflow.com");
+            //Console.WriteLine();
 
             //GetEmployeePhoto(123456789);
             //Console.WriteLine();
 
-            Task.WaitAll(DisplayFields());
-            Console.WriteLine();
+            //Task.WaitAll(DisplayFields());
+            //Console.WriteLine();
+
+            //Task.WaitAll(DisplayTabularFields());
+            //Console.WriteLine();
+
+            //Task.WaitAll(DisplayTimeOffTypes());
+            //Console.WriteLine();
+
+            //Task.WaitAll(DisplayTimeOffTypesByPermissions());
+            //Console.WriteLine();
 
             // THIS WILL CREATE AN ACTUAL TIME OFF REQUEST IN YOUR SYSTEM
             //CreateTimeOffRequest();
@@ -40,7 +50,7 @@ namespace BambooHrClient.Demo
 
             var employee = await bambooHrClient.GetEmployee(workEmail);
 
-            Console.WriteLine(employee);
+            Console.WriteLine(employee.PropsToString());
         }
 
         private async static void DisplayEmployeeInfos()
@@ -56,7 +66,7 @@ namespace BambooHrClient.Demo
 
             // Display the details of the last employee in the list to compare to the regular GetEmployee call
             Console.WriteLine();
-            Console.WriteLine(employees.Last());
+            Console.WriteLine(employees.Last().PropsToString());
         }
 
         private async static void GetEmployeePhoto(int employeeId)
@@ -76,7 +86,45 @@ namespace BambooHrClient.Demo
 
             foreach (var field in fields)
             {
-                Console.WriteLine(field);
+                Console.WriteLine(field.PropsToString());
+            }
+        }
+
+        public async static Task DisplayTimeOffTypes()
+        {
+            var bambooHrClient = new BambooHrClient();
+
+            var timeOffInfo = await bambooHrClient.GetTimeOffTypes();
+
+            Console.WriteLine("Time Off Types:");
+            foreach (var timeOffType in timeOffInfo.TimeOffTypes)
+            {
+                Console.WriteLine(timeOffType.PropsToString());
+            }
+
+            Console.WriteLine("Default Hours:");
+            foreach (var defaultHour in timeOffInfo.DefaultHours)
+            {
+                Console.WriteLine(defaultHour.PropsToString());
+            }
+        }
+
+        public async static Task DisplayTimeOffTypesByPermissions()
+        {
+            var bambooHrClient = new BambooHrClient();
+
+            var timeOffInfo = await bambooHrClient.GetTimeOffTypes("request");
+
+            Console.WriteLine("Time Off Types:");
+            foreach (var timeOffType in timeOffInfo.TimeOffTypes)
+            {
+                Console.WriteLine(timeOffType.PropsToString());
+            }
+
+            Console.WriteLine("Default Hours:");
+            foreach (var defaultHour in timeOffInfo.DefaultHours)
+            {
+                Console.WriteLine(defaultHour.PropsToString());
             }
         }
 
