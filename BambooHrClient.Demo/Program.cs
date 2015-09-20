@@ -84,6 +84,24 @@ namespace BambooHrClient.Demo
             }
         }
 
+        private async static Task DisplayTabularFields()
+        {
+            var bambooHrClient = new BambooHrClient();
+
+            var tables = await bambooHrClient.GetTabularFields();
+
+            foreach (var table in tables)
+            {
+                Console.WriteLine();
+                Console.WriteLine(table.Alias);
+
+                foreach (var field in table.Fields)
+                {
+                    Console.WriteLine(field.PropsToString());
+                }
+            }
+        }
+
         public async static Task DisplayTimeOffTypes()
         {
             var bambooHrClient = new BambooHrClient();
@@ -145,7 +163,7 @@ namespace BambooHrClient.Demo
                 Console.WriteLine(user.PropsToString());
             }
         }
-        
+
         public async static void ListHolidays()
         {
             var bambooHrClient = new BambooHrClient();

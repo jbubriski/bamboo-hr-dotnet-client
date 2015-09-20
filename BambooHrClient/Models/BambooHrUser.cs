@@ -37,6 +37,9 @@ namespace BambooHrClient.Models
             }
         }
 
+        /// <summary>
+        /// Parameterless constructor for XML deserialization.
+        /// </summary>
         public BambooHrUser()
         {
 

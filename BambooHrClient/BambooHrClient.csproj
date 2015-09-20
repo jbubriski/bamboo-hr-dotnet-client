@@ -50,6 +50,8 @@
   <ItemGroup>
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="BambooHrClient.cs" />
+    <Compile Include="Models\BambooHrTabularField.cs" />
+    <Compile Include="Models\BambooHrTable.cs" />
     <Compile Include="Models\BambooHrUser.cs" />
     <Compile Include="Models\BambooHrEmployee.cs" />
     <Compile Include="Models\BambooHrHoliday.cs" />
