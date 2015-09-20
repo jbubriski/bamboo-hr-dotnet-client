@@ -39,6 +39,9 @@ namespace BambooHrClient.Demo
             //Task.WaitAll(DisplayUsers());
             //Console.WriteLine();
 
+            //Task.WaitAll(DisplayLastChangedInfo());
+            //Console.WriteLine();
+
             // THIS WILL CREATE AN ACTUAL TIME OFF REQUEST IN YOUR SYSTEM
             //CreateTimeOffRequest();
 
@@ -157,6 +160,18 @@ namespace BambooHrClient.Demo
             var bambooHrClient = new BambooHrClient();
 
             var users = await bambooHrClient.GetUsers();
+
+            foreach (var user in users)
+            {
+                Console.WriteLine(user.PropsToString());
+            }
+        }
+
+        public async static Task DisplayLastChangedInfo()
+        {
+            var bambooHrClient = new BambooHrClient();
+
+            var users = await bambooHrClient.GetLastChangedInfo(DateTime.Now.AddDays(-7));
 
             foreach (var user in users)
             {

@@ -30,6 +30,8 @@ namespace BambooHrClient
         Task<BambooHrTimeOffTypeInfo> GetTimeOffTypes(string mode = "");
         Task<BambooHrTimeOffPolicy[]> GetTimeOffPolicies();
         Task<BambooHrUser[]> GetUsers();
+
+        Task<BambooHrEmployeeChangedInfo[]> GetLastChangedInfo(DateTime lastChanged, string type = "");
     }
 
     public class BambooHrClient : IBambooHrClient
@@ -707,6 +709,59 @@ namespace BambooHrClient
                     return response.Data.ToArray();
 
                 throw new Exception("Bamboo Response does not contain data");
+            }
+
+            var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
+            var errorMessage = error != null ? ": " + error.Value : string.Empty;
+            throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
+        }
+
+        public async Task<BambooHrEmployeeChangedInfo[]> GetLastChangedInfo(DateTime lastChanged, string type = "")
+        {
+            const string url = "/employees/changed/";
+
+            var restClient = GetNewRestClient();
+            var request = GetNewRestRequest(url, Method.GET, true);
+            
+            request.AddParameter("since", lastChanged.ToString("yyyy-MM-ddTHH:mm:sszzz"), ParameterType.GetOrPost);
+
+            if (!string.IsNullOrWhiteSpace(type))
+            {
+                request.AddParameter("type", type, ParameterType.GetOrPost);
+            }
+
+            IRestResponse response;
+
+            try
+            {
+                response = await restClient.ExecuteTaskAsync(request);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(string.Format("Error executing Bamboo request to {0}", url), ex);
+            }
+
+            if (response.ErrorException != null)
+            {
+                throw new Exception(string.Format("Error executing Bamboo request to {0}", url), response.ErrorException);
+            }
+
+            if (string.IsNullOrWhiteSpace(response.Content))
+            {
+                throw new Exception(string.Format("Empty Response to Request from BambooHR, Code: {0}", response.StatusCode));
+            }
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var raw = response.Content.Replace("Date\":\"0000-00-00\"", "Date\":null").RemoveTroublesomeCharacters();
+                var package = raw.FromJson<BambooHrEmployeeChangedInfos>();
+
+                if (package != null && package.Employees.Any())
+                {
+                    return package.Employees.Values.ToArray();
+                }
+
+                throw new Exception("Bamboo Response does not contain file data");
             }
 
             var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
