@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\BambooHrListField.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="BambooHrClient.cs" />
     <Compile Include="Models\BambooHrEmployeeChangedInfo.cs" />

@@ -21,13 +21,16 @@ namespace BambooHrClient.Demo
             //GetEmployeePhoto(123456789);
             //Console.WriteLine();
 
-            GetEmployeePhotoUrl("test@example.com");
-            Console.WriteLine();
+            //GetEmployeePhotoUrl("test@example.com");
+            //Console.WriteLine();
 
             //Task.WaitAll(DisplayFields());
             //Console.WriteLine();
 
             //Task.WaitAll(DisplayTabularFields());
+            //Console.WriteLine();
+
+            //Task.WaitAll(DisplayListFieldDetails());
             //Console.WriteLine();
 
             //Task.WaitAll(DisplayTimeOffTypes());
@@ -113,6 +116,24 @@ namespace BambooHrClient.Demo
                 foreach (var field in table.Fields)
                 {
                     Console.WriteLine(field.PropsToString());
+                }
+            }
+        }
+
+        private async static Task DisplayListFieldDetails()
+        {
+            var bambooHrClient = new BambooHrClient();
+
+            var fields = await bambooHrClient.GetListFieldDetails();
+
+            foreach (var field in fields)
+            {
+                Console.WriteLine();
+                Console.WriteLine(field.PropsToString());
+
+                foreach (var option in field.Options)
+                {
+                    Console.WriteLine(option.PropsToString());
                 }
             }
         }
