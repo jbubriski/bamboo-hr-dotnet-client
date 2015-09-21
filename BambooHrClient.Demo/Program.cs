@@ -18,11 +18,22 @@ namespace BambooHrClient.Demo
             //DisplayEmployeeInfos();
             //Console.WriteLine();
 
+
+
+            // THIS WILL CREATE AN ACTUAL TIME OFF REQUEST IN YOUR SYSTEM
+            //CreateTimeOffRequest();
+            //Console.WriteLine();
+
+            //Task.WaitAll(DisplayWhosOut());
+            //Console.WriteLine();
+
+
             //GetEmployeePhoto(123456789);
             //Console.WriteLine();
 
             //GetEmployeePhotoUrl("test@example.com");
             //Console.WriteLine();
+
 
             //Task.WaitAll(DisplayFields());
             //Console.WriteLine();
@@ -45,11 +56,10 @@ namespace BambooHrClient.Demo
             //Task.WaitAll(DisplayUsers());
             //Console.WriteLine();
 
+
             //Task.WaitAll(DisplayLastChangedInfo());
             //Console.WriteLine();
 
-            // THIS WILL CREATE AN ACTUAL TIME OFF REQUEST IN YOUR SYSTEM
-            //CreateTimeOffRequest();
 
             Console.WriteLine();
             Console.WriteLine("Press enter to exit");
@@ -70,6 +80,18 @@ namespace BambooHrClient.Demo
             // Display the details of the last employee in the list to compare to the regular GetEmployee call
             Console.WriteLine();
             Console.WriteLine(employees.Last().PropsToString());
+        }
+
+        private async static Task DisplayWhosOut()
+        {
+            var bambooHrClient = new BambooHrClient();
+
+            var whosOut = await bambooHrClient.GetWhosOut();
+
+            foreach (var whosOutInfo in whosOut)
+            {
+                Console.WriteLine(whosOutInfo.PropsToString());
+            }
         }
 
         private async static void GetEmployeePhoto(int employeeId)

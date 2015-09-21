@@ -17,12 +17,13 @@ namespace BambooHrClient
 {
     public interface IBambooHrClient
     {
+        Task<List<BambooHrEmployee>> GetEmployees(); 
+        
         Task<List<BambooHrTimeOffRequest>> GetTimeOffRequests(int employeeId);
         Task<BambooHrTimeOffRequest> GetTimeOffRequest(int timeOffRequestId);
         Task<int> CreateTimeOffRequest(int employeeId, int timeOffTypeId, DateTime startDate, DateTime endDate, bool startHalfDay = false, bool endHalfDay = false, string comment = null, List<DateTime> holidays = null, int? previousTimeOffRequestId = null);
-        Task<List<BambooHrEmployee>> GetEmployees();
-
         Task<bool> CancelTimeOffRequest(int timeOffRequestId, string reason = null);
+        Task<List<BambooHrWhosOutInfo>> GetWhosOut(DateTime? startDate = null, DateTime? endDate = null);
         Task<List<BambooHrHoliday>> GetHolidays(DateTime startDate, DateTime endDate); Task<BambooHrEmployee> GetEmployee(int employeeId);
 
         Task<Byte[]> GetEmployeePhoto(int employeeId, string size = "small");
@@ -470,6 +471,58 @@ namespace BambooHrClient
             if (response.StatusCode == HttpStatusCode.OK)
             {
                 return true;
+            }
+
+            var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
+            var errorMessage = error != null ? ": " + error.Value : string.Empty;
+            throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
+        }
+
+        public async Task<List<BambooHrWhosOutInfo>> GetWhosOut(DateTime? startDate = null, DateTime? endDate = null)
+        {
+            const string url = "/time_off/whos_out/";
+
+            var restClient = GetNewRestClient();
+            var request = GetNewRestRequest(url, Method.GET, true);
+
+            if (startDate.HasValue)
+                request.AddParameter("start", startDate.Value.ToString(Constants.BambooHrDateFormat), ParameterType.QueryString);
+
+            if (endDate.HasValue)
+                request.AddParameter("end", endDate.Value.ToString(Constants.BambooHrDateFormat), ParameterType.QueryString);
+
+            IRestResponse response;
+
+            try
+            {
+                response = await restClient.ExecuteTaskAsync(request);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(string.Format("Error executing Bamboo request to {0}", url), ex);
+            }
+
+            if (response.ErrorException != null)
+            {
+                throw new Exception(string.Format("Error executing Bamboo request to {0}", url), response.ErrorException);
+            }
+
+            if (string.IsNullOrWhiteSpace(response.Content))
+            {
+                throw new Exception(string.Format("Empty Response to Request from BambooHR, Code: {0}", response.StatusCode));
+            }
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                var raw = response.Content.Replace("Date\":\"0000-00-00\"", "Date\":null").RemoveTroublesomeCharacters();
+                var package = raw.FromJson<List<BambooHrWhosOutInfo>>();
+
+                if (package != null && package.Any())
+                {
+                    return package;
+                }
+
+                throw new Exception("Bamboo Response does not contain data.");
             }
 
             var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
