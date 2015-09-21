@@ -26,6 +26,62 @@ If you're using this in the context of a web application project or website proj
 At some point, I may provide a programmatic way to configure this information for use in other scenarios???  What **are** those other scenarios!?!?!?
 
 
+## API Coverage
+
+Here is a probably-mostly-up-to-date list of implemented API calls:
+
+- [ ] - Single Dimensional Data
+    - [ ] - Employees
+        - [ ] - Add an employee
+        - [x] - Get an employee
+        - [ ] - Update an employee
+        - [-] - Get a directory of employees (sort of, through custom report)
+    - [ ] - Reports
+        - [ ] - Request a company report
+        - [ ] - Request a custom report
+    - [ ] - Employee Files
+        - [ ] - List employee files and categories
+        - [ ] - Add an employee file category
+        - [ ] - Update an employee file
+        - [ ] - Download an employee file
+        - [ ] - Upload an employee file
+    - [ ] - Company Files
+        - [ ] - List company files and categories
+        - [ ] - Add a company file category
+        - [ ] - Update a company file
+        - [ ] - Download a company file
+        - [ ] - Upload a company file
+- [ ] - Tabular Data
+    - [ ] - Get a table
+    - [ ] - Update a row
+    - [ ] - Add a row
+    - [ ] - Get tables for changed employees
+- [] - Time Off
+    - [x] - Get time off requests
+    - [x] - Add a time off request
+    - [ ] - Change a request status
+    - [ ] - Add a time off history entry
+    - [ ] - List assigned Time Off Policies
+    - [ ] - Assign a new Time Off Policy
+    - [ ] - Add a time off history override
+    - [ ] - Estimate future time off balances
+    - [ ] - Get a list of who's out, including company holidays
+- [ ] - Photos
+    - [x] - Get an employee photo
+    - [ ] - Upload an employee photo
+    - [ ] - Using a photo from BambooHR's servers
+- [ ] - Metadata
+    - [x] - Get a list of fields
+    - [x] - Get a list of tabular fields
+    - [ ] - Get the details for "list" fields in an account
+    - [ ] - Add or update values for "list" fields in an account
+    - [x] - Get a list of time off types
+    - [x] - Get a list of time off policies
+    - [x] - Get a list of users
+- [ ] - Last Change Information
+- [ ] - Login
+
+
 ## Caveats/Notes
 
 This library doesn't do any caching for you, make sure you don't spam the API and go over your limit! There's probably a limit, right?
