@@ -73,7 +73,7 @@ Here is a probably-mostly-up-to-date list of implemented API calls:
 - [ ] - Metadata
     - [x] - Get a list of fields
     - [x] - Get a list of tabular fields
-    - [ ] - Get the details for "list" fields in an account
+    - [x] - Get the details for "list" fields in an account
     - [ ] - Add or update values for "list" fields in an account
     - [x] - Get a list of time off types
     - [x] - Get a list of time off policies
