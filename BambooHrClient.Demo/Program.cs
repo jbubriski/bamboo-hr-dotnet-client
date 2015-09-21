@@ -21,6 +21,9 @@ namespace BambooHrClient.Demo
             //GetEmployeePhoto(123456789);
             //Console.WriteLine();
 
+            GetEmployeePhotoUrl("test@example.com");
+            Console.WriteLine();
+
             //Task.WaitAll(DisplayFields());
             //Console.WriteLine();
 
@@ -73,6 +76,15 @@ namespace BambooHrClient.Demo
             var fileData = await bambooHrClient.GetEmployeePhoto(employeeId);
 
             File.WriteAllBytes(@"C:\test.jpeg", fileData);
+        }
+
+        private async static void GetEmployeePhotoUrl(string employeeEmail)
+        {
+            var bambooHrClient = new BambooHrClient();
+
+            var url = bambooHrClient.GetEmployeePhotoUrl(employeeEmail);
+
+            Console.WriteLine(url);
         }
 
         private async static Task DisplayFields()

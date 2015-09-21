@@ -11,6 +11,7 @@ using RestSharp;
 using RestSharp.Authenticators;
 using RestSharp.Deserializers;
 using RestSharp.Serializers;
+using System.Security.Cryptography;
 
 namespace BambooHrClient
 {
@@ -20,10 +21,12 @@ namespace BambooHrClient
         Task<BambooHrTimeOffRequest> GetTimeOffRequest(int timeOffRequestId);
         Task<int> CreateTimeOffRequest(int employeeId, int timeOffTypeId, DateTime startDate, DateTime endDate, bool startHalfDay = false, bool endHalfDay = false, string comment = null, List<DateTime> holidays = null, int? previousTimeOffRequestId = null);
         Task<List<BambooHrEmployee>> GetEmployees();
-        Task<BambooHrEmployee> GetEmployee(int employeeId);
-        Task<Byte[]> GetEmployeePhoto(int employeeId, string size = "small");
+
         Task<bool> CancelTimeOffRequest(int timeOffRequestId, string reason = null);
-        Task<List<BambooHrHoliday>> GetHolidays(DateTime startDate, DateTime endDate);
+        Task<List<BambooHrHoliday>> GetHolidays(DateTime startDate, DateTime endDate); Task<BambooHrEmployee> GetEmployee(int employeeId);
+
+        Task<Byte[]> GetEmployeePhoto(int employeeId, string size = "small");
+        string GetEmployeePhotoUrl(string employeeEmail);
 
         Task<BambooHrField[]> GetFields();
         Task<BambooHrTable[]> GetTabularFields();
@@ -161,6 +164,9 @@ namespace BambooHrClient
             throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
         }
 
+
+        #region Photos
+
         public async Task<Byte[]> GetEmployeePhoto(int employeeId, string size = "small")
         {
             var url = string.Format("/employees/{0}/photo/{1}", employeeId, size);
@@ -205,6 +211,30 @@ namespace BambooHrClient
             var errorMessage = error != null ? ": " + error.Value : string.Empty;
             throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
         }
+
+        public string GetEmployeePhotoUrl(string employeeEmail)
+        {
+            var hashedEmail = Hash(employeeEmail);
+            var url = string.Format(Constants.BambooCompanyUrl + "/employees/photos/?h={0}", hashedEmail);
+
+            return url;
+        }
+
+        /// <summary>
+        /// Mostly from Stack Overflow post: http://stackoverflow.com/a/24031467/57698
+        /// </summary>
+        /// <param name="input"></param>
+        /// <returns></returns>
+        private string Hash(string input)
+        {
+            var asciiBytes = ASCIIEncoding.ASCII.GetBytes(input.Trim().ToLower());
+            var hashedBytes = MD5CryptoServiceProvider.Create().ComputeHash(asciiBytes);
+            var hashedString = BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
+
+            return hashedString;
+        }
+
+        #endregion
 
         /// <summary>
         /// Creates an approved Time Off Request in BambooHR.  Optionally, you can specify half days which reduces the respective day to 4 hours, comments, a list of holidays to skip, and a previous Time Off Request ID to supersede.

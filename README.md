@@ -69,7 +69,7 @@ Here is a probably-mostly-up-to-date list of implemented API calls:
 - [ ] - Photos
     - [x] - Get an employee photo
     - [ ] - Upload an employee photo
-    - [ ] - Using a photo from BambooHR's servers
+    - [-] - Using a photo from BambooHR's servers (Not fully tested)
 - [ ] - Metadata
     - [x] - Get a list of fields
     - [x] - Get a list of tabular fields
