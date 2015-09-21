@@ -64,7 +64,7 @@ Here is a probably-mostly-up-to-date list of implemented API calls:
     - [ ] - List assigned Time Off Policies
     - [ ] - Assign a new Time Off Policy
     - [ ] - Add a time off history override
-    - [ ] - Estimate future time off balances
+    - [x] - Estimate future time off balances
     - [x] - Get a list of who's out, including company holidays
 - [ ] - Photos
     - [x] - Get an employee photo
