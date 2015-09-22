@@ -55,6 +55,7 @@
     <Compile Include="Models\BambooHrEmployeeChangedInfo.cs" />
     <Compile Include="Models\BambooHrTabularField.cs" />
     <Compile Include="Models\BambooHrTable.cs" />
+    <Compile Include="Models\BambooHrTimeOffPolicy.cs" />
     <Compile Include="Models\BambooHrUser.cs" />
     <Compile Include="Models\BambooHrEmployee.cs" />
     <Compile Include="Models\BambooHrHoliday.cs" />

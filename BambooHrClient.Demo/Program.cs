@@ -24,6 +24,9 @@ namespace BambooHrClient.Demo
             //CreateTimeOffRequest();
             //Console.WriteLine();
 
+            //Task.WaitAll(DisplayAssignedTimeOffPolicies(1));
+            //Console.WriteLine();
+
             //Task.WaitAll(DisplayFutureTimeOffBalanceEstimates());
             //Console.WriteLine();
 
@@ -83,6 +86,18 @@ namespace BambooHrClient.Demo
             // Display the details of the last employee in the list to compare to the regular GetEmployee call
             Console.WriteLine();
             Console.WriteLine(employees.Last().PropsToString());
+        }
+
+        private async static Task DisplayAssignedTimeOffPolicies(int employeeId)
+        {
+            var bambooHrClient = new BambooHrClient();
+
+            var timeOffPolicies = await bambooHrClient.GetAssignedTimeOffPolicies(employeeId);
+
+            foreach (var timeOffPolicy in timeOffPolicies)
+            {
+                Console.WriteLine(timeOffPolicy.PropsToString());
+            }
         }
 
         private async static Task DisplayFutureTimeOffBalanceEstimates(int employeeId)

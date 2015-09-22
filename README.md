@@ -56,12 +56,12 @@ Here is a probably-mostly-up-to-date list of implemented API calls:
     - [ ] - Update a row
     - [ ] - Add a row
     - [ ] - Get tables for changed employees
-- [] - Time Off
+- [ ] - Time Off
     - [x] - Get time off requests
     - [x] - Add a time off request
     - [ ] - Change a request status
     - [ ] - Add a time off history entry
-    - [ ] - List assigned Time Off Policies
+    - [x] - List assigned Time Off Policies
     - [ ] - Assign a new Time Off Policy
     - [ ] - Add a time off history override
     - [x] - Estimate future time off balances
@@ -78,7 +78,7 @@ Here is a probably-mostly-up-to-date list of implemented API calls:
     - [x] - Get a list of time off types
     - [x] - Get a list of time off policies
     - [x] - Get a list of users
-- [ ] - Last Change Information
+- [x] - Last Change Information
 - [ ] - Login
 
 
