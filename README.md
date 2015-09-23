@@ -52,7 +52,7 @@ Here is a probably-mostly-up-to-date list of implemented API calls:
         - [ ] - Download a company file
         - [ ] - Upload a company file
 - [ ] - Tabular Data
-    - [ ] - Get a table
+    - [x] - Get a table
     - [ ] - Update a row
     - [ ] - Add a row
     - [ ] - Get tables for changed employees

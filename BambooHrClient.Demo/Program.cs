@@ -20,16 +20,16 @@ namespace BambooHrClient.Demo
             //Console.WriteLine();
 
 
-            Task.WaitAll(DisplayTabluarData(1, BambooHrTableType.Compensation));
-            Console.WriteLine();
-            Task.WaitAll(DisplayTabluarData(1, BambooHrTableType.Dependents));
-            Console.WriteLine();
-            Task.WaitAll(DisplayTabluarData(1, BambooHrTableType.EmergencyContacts));
-            Console.WriteLine();
-            Task.WaitAll(DisplayTabluarData(1, BambooHrTableType.EmploymentStatus));
-            Console.WriteLine();
-            Task.WaitAll(DisplayTabluarData(1, BambooHrTableType.JobInfo));
-            Console.WriteLine();
+            //Task.WaitAll(DisplayTabluarData(1, BambooHrTableType.Compensation));
+            //Console.WriteLine();
+            //Task.WaitAll(DisplayTabluarData(1, BambooHrTableType.Dependents));
+            //Console.WriteLine();
+            //Task.WaitAll(DisplayTabluarData(1, BambooHrTableType.EmergencyContacts));
+            //Console.WriteLine();
+            //Task.WaitAll(DisplayTabluarData(1, BambooHrTableType.EmploymentStatus));
+            //Console.WriteLine();
+            //Task.WaitAll(DisplayTabluarData(1, BambooHrTableType.JobInfo));
+            //Console.WriteLine();
 
 
             // THIS WILL CREATE AN ACTUAL TIME OFF REQUEST IN YOUR SYSTEM
