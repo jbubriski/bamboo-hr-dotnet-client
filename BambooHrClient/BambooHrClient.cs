@@ -428,7 +428,7 @@ namespace BambooHrClient
                     return package;
                 }
 
-                throw new Exception("Bamboo Response does not contain Employees collection");
+                throw new Exception("Bamboo Response does not contain data.");
             }
 
             var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
@@ -476,7 +476,7 @@ namespace BambooHrClient
                     return package.SingleOrDefault();
                 }
 
-                throw new Exception("Bamboo Response does not contain Employees collection");
+                throw new Exception("Bamboo Response does not contain data.");
             }
 
             var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");

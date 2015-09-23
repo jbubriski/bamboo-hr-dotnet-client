@@ -1,7 +1,5 @@
 ﻿using RestSharp.Deserializers;
 using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace BambooHrClient.Models
 {
