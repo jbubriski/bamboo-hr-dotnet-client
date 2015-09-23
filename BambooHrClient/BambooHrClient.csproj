@@ -48,11 +48,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Models\BambooHrRowData.cs" />
     <Compile Include="Models\BambooHrEstimate.cs" />
     <Compile Include="Models\BambooHrListField.cs" />
     <Compile Include="Extensions\ObjectExtensions.cs" />
     <Compile Include="BambooHrClient.cs" />
     <Compile Include="Models\BambooHrEmployeeChangedInfo.cs" />
+    <Compile Include="Models\BambooHrTableType.cs" />
     <Compile Include="Models\BambooHrTabularField.cs" />
     <Compile Include="Models\BambooHrTable.cs" />
     <Compile Include="Models\BambooHrTimeOffPolicy.cs" />

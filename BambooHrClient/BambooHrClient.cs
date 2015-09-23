@@ -17,8 +17,10 @@ namespace BambooHrClient
 {
     public interface IBambooHrClient
     {
-        Task<List<BambooHrEmployee>> GetEmployees(); 
-        
+        Task<List<BambooHrEmployee>> GetEmployees();
+
+        Task<List<Dictionary<string, string>>> GetTabularData(string employeeId, BambooHrTableType tableType);
+
         Task<List<BambooHrTimeOffRequest>> GetTimeOffRequests(int employeeId);
         Task<BambooHrTimeOffRequest> GetTimeOffRequest(int timeOffRequestId);
         Task<int> CreateTimeOffRequest(int employeeId, int timeOffTypeId, DateTime startDate, DateTime endDate, bool startHalfDay = false, bool endHalfDay = false, string comment = null, List<DateTime> holidays = null, int? previousTimeOffRequestId = null);
@@ -26,7 +28,8 @@ namespace BambooHrClient
         Task<List<BambooHrAssignedTimeOffPolicy>> GetAssignedTimeOffPolicies(int employeeId);
         Task<List<BambooHrEstimate>> GetFutureTimeOffBalanceEstimates(int employeeId, DateTime? endDate = null);
         Task<List<BambooHrWhosOutInfo>> GetWhosOut(DateTime? startDate = null, DateTime? endDate = null);
-        Task<List<BambooHrHoliday>> GetHolidays(DateTime startDate, DateTime endDate); Task<BambooHrEmployee> GetEmployee(int employeeId);
+        Task<List<BambooHrHoliday>> GetHolidays(DateTime startDate, DateTime endDate);
+        Task<BambooHrEmployee> GetEmployee(int employeeId);
 
         Task<Byte[]> GetEmployeePhoto(int employeeId, string size = "small");
         string GetEmployeePhotoUrl(string employeeEmail);
@@ -81,6 +84,42 @@ namespace BambooHrClient
     <timeOffRequestId>{1}</timeOffRequestId>  
     <note>{2}</note>
 </history>";
+
+        public async Task<List<Dictionary<string, string>>> GetTabularData(string employeeId, BambooHrTableType tableType)
+        {
+            var url = string.Format("/employees/{0}/tables/{1}/", employeeId, tableType.ToString().LowerCaseFirstLetter());
+
+            var restClient = GetNewRestClient();
+            var request = GetNewRestRequest(url, Method.GET, true);
+
+            IRestResponse<List<Dictionary<string, string>>> response;
+
+            try
+            {
+                response = await restClient.ExecuteTaskAsync<List<Dictionary<string, string>>>(request);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error executing Bamboo request to " + url, ex);
+            }
+
+            if (response.ErrorException != null)
+                throw new Exception("Error executing Bamboo request to " + url, response.ErrorException);
+
+            if (response.StatusCode == HttpStatusCode.OK)
+            {
+                if (response.Data != null)
+                {
+                    return response.Data;
+                }
+
+                throw new Exception("Bamboo Response does not contain data.");
+            }
+
+            var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
+            var errorMessage = error != null ? ": " + error.Value : string.Empty;
+            throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
+        }
 
         public async Task<List<BambooHrEmployee>> GetEmployees()
         {
@@ -940,7 +979,7 @@ namespace BambooHrClient
 
             var restClient = GetNewRestClient();
             var request = GetNewRestRequest(url, Method.GET, true);
-            
+
             request.AddParameter("since", lastChanged.ToString("yyyy-MM-ddTHH:mm:sszzz"), ParameterType.GetOrPost);
 
             if (!string.IsNullOrWhiteSpace(type))

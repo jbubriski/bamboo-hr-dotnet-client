@@ -44,5 +44,10 @@ namespace BambooHrClient
             newString.Replace(@"\u00a0", " ").Replace(@"\u200e", "").Replace(@"\u00e9", "é");
             return newString.ToString();
         }
+
+        public static string LowerCaseFirstLetter(this string value)
+        {
+            return value[0].ToString().ToLower() + value.Substring(1, value.Length - 1);
+        }
     }
 }

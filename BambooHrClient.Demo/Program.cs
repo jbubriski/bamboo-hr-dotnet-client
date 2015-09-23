@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using BambooHrClient.Extensions;
+using BambooHrClient.Models;
 
 namespace BambooHrClient.Demo
 {
@@ -18,6 +19,17 @@ namespace BambooHrClient.Demo
             //DisplayEmployeeInfos();
             //Console.WriteLine();
 
+
+            Task.WaitAll(DisplayTabluarData(1, BambooHrTableType.Compensation));
+            Console.WriteLine();
+            Task.WaitAll(DisplayTabluarData(1, BambooHrTableType.Dependents));
+            Console.WriteLine();
+            Task.WaitAll(DisplayTabluarData(1, BambooHrTableType.EmergencyContacts));
+            Console.WriteLine();
+            Task.WaitAll(DisplayTabluarData(1, BambooHrTableType.EmploymentStatus));
+            Console.WriteLine();
+            Task.WaitAll(DisplayTabluarData(1, BambooHrTableType.JobInfo));
+            Console.WriteLine();
 
 
             // THIS WILL CREATE AN ACTUAL TIME OFF REQUEST IN YOUR SYSTEM
@@ -88,6 +100,21 @@ namespace BambooHrClient.Demo
             Console.WriteLine(employees.Last().PropsToString());
         }
 
+        private async static Task DisplayTabluarData(int employeeId, BambooHrTableType tableType)
+        {
+            var bambooHrClient = new BambooHrClient();
+
+            var data = await bambooHrClient.GetTabularData(employeeId.ToString(), tableType);
+
+            foreach (var row in data)
+            {
+                foreach (var key in row.Keys)
+                {
+                    Console.WriteLine(row[key]);
+                }
+            }
+        }
+
         private async static Task DisplayAssignedTimeOffPolicies(int employeeId)
         {
             var bambooHrClient = new BambooHrClient();
@@ -124,7 +151,7 @@ namespace BambooHrClient.Demo
             }
         }
 
-        private async static void GetEmployeePhoto(int employeeId)
+        private async static Task DownloadEmployeePhoto(int employeeId)
         {
             var bambooHrClient = new BambooHrClient();
 
@@ -133,7 +160,7 @@ namespace BambooHrClient.Demo
             File.WriteAllBytes(@"C:\test.jpeg", fileData);
         }
 
-        private async static void GetEmployeePhotoUrl(string employeeEmail)
+        private async static void DisplayEmployeePhotoUrl(string employeeEmail)
         {
             var bambooHrClient = new BambooHrClient();
 
