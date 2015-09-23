@@ -258,7 +258,7 @@ namespace BambooHrClient
         public string GetEmployeePhotoUrl(string employeeEmail)
         {
             var hashedEmail = Hash(employeeEmail);
-            var url = string.Format(Constants.BambooCompanyUrl + "/employees/photos/?h={0}", hashedEmail);
+            var url = string.Format(Config.BambooCompanyUrl + "/employees/photos/?h={0}", hashedEmail);
 
             return url;
         }
@@ -1063,9 +1063,9 @@ namespace BambooHrClient
 
         private RestClient GetNewRestClient()
         {
-            return new RestClient(Constants.BambooApiUrl)
+            return new RestClient(Config.BambooApiUrl)
             {
-                Authenticator = new HttpBasicAuthenticator(Constants.BambooApiKey, "x")
+                Authenticator = new HttpBasicAuthenticator(Config.BambooApiKey, "x")
             };
         }
 
