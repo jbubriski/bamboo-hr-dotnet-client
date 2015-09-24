@@ -10,6 +10,9 @@ namespace BambooHrClient.Models
         public string Name { get; set; }
         public string Alias { get; set; }
 
+        /// <summary>
+        /// Parameterless constructor for XML deserialization.
+        /// </summary>
         public BambooHrField()
         {
 

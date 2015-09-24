@@ -15,6 +15,9 @@ namespace BambooHrClient.Models
 
         public List<BambooHrListFieldOption> Options { get; set; }
 
+        /// <summary>
+        /// Parameterless constructor for XML deserialization.
+        /// </summary>
         public BambooHrListField()
         {
 
@@ -31,6 +34,9 @@ namespace BambooHrClient.Models
         public DateTime? CreatedDate { get; set; }
         public DateTime? ArchivedDate { get; set; }
 
+        /// <summary>
+        /// Parameterless constructor for XML deserialization.
+        /// </summary>
         public BambooHrListFieldOption()
         {
 

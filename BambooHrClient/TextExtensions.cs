@@ -27,13 +27,12 @@ namespace BambooHrClient
         {
             if (inString == null) return null;
 
-            StringBuilder newString = new StringBuilder();
+            var newString = new StringBuilder();
             char ch;
 
-            for (int i = 0; i < inString.Length; i++)
+            foreach (var t in inString)
             {
-
-                ch = inString[i];
+                ch = t;
                 // remove any characters outside the valid UTF-8 range as well as all control characters
                 // except tabs and new lines
                 if ((ch < 0x00FD && ch > 0x001F) || ch == '\t' || ch == '\n' || ch == '\r')
