@@ -9,8 +9,6 @@ using System.Xml;
 using BambooHrClient.Models;
 using RestSharp;
 using RestSharp.Authenticators;
-using RestSharp.Deserializers;
-using RestSharp.Serializers;
 using System.Security.Cryptography;
 
 namespace BambooHrClient
@@ -85,18 +83,32 @@ namespace BambooHrClient
     <note>{2}</note>
 </history>";
 
+        private IRestClient _iRestClient;
+
+        public BambooHrClient()
+        {
+            _iRestClient = new RestClient(Config.BambooApiUrl)
+            {
+                Authenticator = new HttpBasicAuthenticator(Config.BambooApiKey, "x")
+            };
+        }
+
+        public BambooHrClient(IRestClient iRestClient)
+        {
+            _iRestClient = iRestClient;
+        }
+
         public async Task<List<Dictionary<string, string>>> GetTabularData(string employeeId, BambooHrTableType tableType)
         {
             var url = string.Format("/employees/{0}/tables/{1}/", employeeId, tableType.ToString().LowerCaseFirstLetter());
 
-            var restClient = GetNewRestClient();
             var request = GetNewRestRequest(url, Method.GET, true);
 
             IRestResponse<List<Dictionary<string, string>>> response;
 
             try
             {
-                response = await restClient.ExecuteTaskAsync<List<Dictionary<string, string>>>(request);
+                response = await _iRestClient.ExecuteTaskAsync<List<Dictionary<string, string>>>(request);
             }
             catch (Exception ex)
             {
@@ -126,7 +138,6 @@ namespace BambooHrClient
             const string url = "/reports/custom?format=json";
             var xml = GenerateUserReportRequestXml();
 
-            var restClient = GetNewRestClient();
             var request = GetNewRestRequest(url, Method.POST, true);
 
             request.AddParameter("text/xml", xml, ParameterType.RequestBody);
@@ -135,7 +146,7 @@ namespace BambooHrClient
 
             try
             {
-                response = await restClient.ExecuteTaskAsync(request);
+                response = await _iRestClient.ExecuteTaskAsync(request);
             }
             catch (Exception ex)
             {
@@ -169,14 +180,13 @@ namespace BambooHrClient
         {
             var url = "/employees/" + employeeId;
 
-            var restClient = GetNewRestClient();
             var request = GetNewRestRequest(url, Method.GET, true);
 
             IRestResponse response;
 
             try
             {
-                response = await restClient.ExecuteTaskAsync(request);
+                response = await _iRestClient.ExecuteTaskAsync(request);
             }
             catch (Exception ex)
             {
@@ -214,14 +224,13 @@ namespace BambooHrClient
         {
             var url = string.Format("/employees/{0}/photo/{1}", employeeId, size);
 
-            var restClient = GetNewRestClient();
             var request = GetNewRestRequest(url, Method.GET, true);
 
             IRestResponse response;
 
             try
             {
-                response = await restClient.ExecuteTaskAsync(request);
+                response = await _iRestClient.ExecuteTaskAsync(request);
             }
             catch (Exception ex)
             {
@@ -270,8 +279,8 @@ namespace BambooHrClient
         /// <returns></returns>
         private string Hash(string input)
         {
-            var asciiBytes = ASCIIEncoding.ASCII.GetBytes(input.Trim().ToLower());
-            var hashedBytes = MD5CryptoServiceProvider.Create().ComputeHash(asciiBytes);
+            var asciiBytes = Encoding.ASCII.GetBytes(input.Trim().ToLower());
+            var hashedBytes = MD5.Create().ComputeHash(asciiBytes);
             var hashedString = BitConverter.ToString(hashedBytes).Replace("-", "").ToLower();
 
             return hashedString;
@@ -296,7 +305,6 @@ namespace BambooHrClient
         {
             var url = string.Format("/employees/{0}/time_off/request", employeeId);
 
-            var restClient = GetNewRestClient();
             var request = GetNewRestRequest(url, Method.PUT, false);
 
             var datesXml = GetDatesXml(startDate, endDate, startHalfDay, endHalfDay, holidays);
@@ -318,7 +326,7 @@ namespace BambooHrClient
 
             try
             {
-                response = await restClient.ExecuteTaskAsync(request);
+                response = await _iRestClient.ExecuteTaskAsync(request);
             }
             catch (Exception ex)
             {
@@ -356,7 +364,6 @@ namespace BambooHrClient
             var note = "Automatically created by OOO tool because request is in the past.";
             var historyEntryRequestFormat = string.Format(_historyEntryRequestFormat, date.ToString(Constants.BambooHrDateFormat), timeOffRequestId, note);
 
-            var restClient = GetNewRestClient();
             var request = GetNewRestRequest(url, Method.PUT, false);
 
             request.AddParameter("text/xml", historyEntryRequestFormat, ParameterType.RequestBody);
@@ -365,7 +372,7 @@ namespace BambooHrClient
 
             try
             {
-                response = await restClient.ExecuteTaskAsync(request);
+                response = await _iRestClient.ExecuteTaskAsync(request);
             }
             catch (Exception ex)
             {
@@ -392,7 +399,6 @@ namespace BambooHrClient
         {
             const string url = "/time_off/requests/";
 
-            var restClient = GetNewRestClient();
             var request = GetNewRestRequest(url, Method.GET, true);
 
             request.AddParameter("employeeId", employeeId, ParameterType.QueryString);
@@ -401,7 +407,7 @@ namespace BambooHrClient
 
             try
             {
-                response = await restClient.ExecuteTaskAsync(request);
+                response = await _iRestClient.ExecuteTaskAsync(request);
             }
             catch (Exception ex)
             {
@@ -440,7 +446,6 @@ namespace BambooHrClient
         {
             const string url = "/time_off/requests/";
 
-            var restClient = GetNewRestClient();
             var request = GetNewRestRequest(url, Method.GET, true);
 
             request.AddParameter("id", timeOffRequestId, ParameterType.QueryString);
@@ -449,7 +454,7 @@ namespace BambooHrClient
 
             try
             {
-                response = await restClient.ExecuteTaskAsync(request);
+                response = await _iRestClient.ExecuteTaskAsync(request);
             }
             catch (Exception ex)
             {
@@ -488,7 +493,6 @@ namespace BambooHrClient
         {
             var url = string.Format("time_off/requests/{0}/status/", timeOffRequestId);
 
-            var restClient = GetNewRestClient();
             var request = GetNewRestRequest(url, Method.PUT, true);
 
             request.AddParameter("text/xml", _cancelTimeOffRequestXml, ParameterType.RequestBody);
@@ -497,7 +501,7 @@ namespace BambooHrClient
 
             try
             {
-                response = await restClient.ExecuteTaskAsync(request);
+                response = await _iRestClient.ExecuteTaskAsync(request);
             }
             catch (Exception ex)
             {
@@ -523,14 +527,13 @@ namespace BambooHrClient
         {
             var url = string.Format("/employees/{0}/time_off/policies/", employeeId);
 
-            var restClient = GetNewRestClient();
             var request = GetNewRestRequest(url, Method.GET, true);
 
             IRestResponse response;
 
             try
             {
-                response = await restClient.ExecuteTaskAsync(request);
+                response = await _iRestClient.ExecuteTaskAsync(request);
             }
             catch (Exception ex)
             {
@@ -569,7 +572,6 @@ namespace BambooHrClient
         {
             var url = string.Format("/employees/{0}/time_off/calculator/", employeeId);
 
-            var restClient = GetNewRestClient();
             var request = GetNewRestRequest(url, Method.GET, true);
 
             if (endDate.HasValue)
@@ -579,7 +581,7 @@ namespace BambooHrClient
 
             try
             {
-                response = await restClient.ExecuteTaskAsync(request);
+                response = await _iRestClient.ExecuteTaskAsync(request);
             }
             catch (Exception ex)
             {
@@ -618,7 +620,6 @@ namespace BambooHrClient
         {
             const string url = "/time_off/whos_out/";
 
-            var restClient = GetNewRestClient();
             var request = GetNewRestRequest(url, Method.GET, true);
 
             if (startDate.HasValue)
@@ -631,7 +632,7 @@ namespace BambooHrClient
 
             try
             {
-                response = await restClient.ExecuteTaskAsync(request);
+                response = await _iRestClient.ExecuteTaskAsync(request);
             }
             catch (Exception ex)
             {
@@ -668,9 +669,8 @@ namespace BambooHrClient
 
         public async Task<List<BambooHrHoliday>> GetHolidays(DateTime startDate, DateTime endDate)
         {
-            var url = "/time_off/holidays/";
+            const string url = "/time_off/holidays/";
 
-            var restClient = GetNewRestClient();
             var request = GetNewRestRequest(url, Method.GET, true);
 
             request.AddParameter("start", startDate.ToString(Constants.BambooHrDateFormat), ParameterType.QueryString);
@@ -684,7 +684,7 @@ namespace BambooHrClient
                 // !!!
                 // Something about this breaks with BambooHR if you use ExecuteTaskAsync and await the response
                 // !!!
-                response = restClient.Execute(request);
+                response = _iRestClient.Execute(request);
             }
             catch (Exception ex)
             {
@@ -732,14 +732,13 @@ namespace BambooHrClient
         {
             const string url = "/meta/fields/";
 
-            var restClient = GetNewRestClient();
             var request = GetNewRestRequest(url, Method.GET, true);
 
             IRestResponse response;
 
             try
             {
-                response = await restClient.ExecuteTaskAsync(request);
+                response = await _iRestClient.ExecuteTaskAsync(request);
             }
             catch (Exception ex)
             {
@@ -778,14 +777,13 @@ namespace BambooHrClient
         {
             const string url = "/meta/tables/";
 
-            var restClient = GetNewRestClient();
             var request = GetNewRestRequest(url, Method.GET, true);
 
             IRestResponse<List<BambooHrTable>> response;
 
             try
             {
-                response = await restClient.ExecuteTaskAsync<List<BambooHrTable>>(request);
+                response = await _iRestClient.ExecuteTaskAsync<List<BambooHrTable>>(request);
             }
             catch (Exception ex)
             {
@@ -815,14 +813,13 @@ namespace BambooHrClient
         {
             const string url = "/meta/lists/";
 
-            var restClient = GetNewRestClient();
             var request = GetNewRestRequest(url, Method.GET, true);
 
             IRestResponse<List<BambooHrListField>> response;
 
             try
             {
-                response = await restClient.ExecuteTaskAsync<List<BambooHrListField>>(request);
+                response = await _iRestClient.ExecuteTaskAsync<List<BambooHrListField>>(request);
             }
             catch (Exception ex)
             {
@@ -852,7 +849,6 @@ namespace BambooHrClient
         {
             const string url = "/meta/time_off/types/";
 
-            var restClient = GetNewRestClient();
             var request = GetNewRestRequest(url, Method.GET, true);
 
             if (!string.IsNullOrWhiteSpace(mode))
@@ -862,7 +858,7 @@ namespace BambooHrClient
 
             try
             {
-                response = await restClient.ExecuteTaskAsync(request);
+                response = await _iRestClient.ExecuteTaskAsync(request);
             }
             catch (Exception ex)
             {
@@ -900,14 +896,13 @@ namespace BambooHrClient
         {
             const string url = "/meta/time_off/policies/";
 
-            var restClient = GetNewRestClient();
             var request = GetNewRestRequest(url, Method.GET, true);
 
             IRestResponse response;
 
             try
             {
-                response = await restClient.ExecuteTaskAsync(request);
+                response = await _iRestClient.ExecuteTaskAsync(request);
             }
             catch (Exception ex)
             {
@@ -940,14 +935,13 @@ namespace BambooHrClient
         {
             const string url = "/meta/users/";
 
-            var restClient = GetNewRestClient();
             var request = GetNewRestRequest(url, Method.GET, true);
 
             IRestResponse<List<BambooHrUser>> response;
 
             try
             {
-                response = await restClient.ExecuteTaskAsync<List<BambooHrUser>>(request);
+                response = await _iRestClient.ExecuteTaskAsync<List<BambooHrUser>>(request);
             }
             catch (Exception ex)
             {
@@ -977,7 +971,6 @@ namespace BambooHrClient
         {
             const string url = "/employees/changed/";
 
-            var restClient = GetNewRestClient();
             var request = GetNewRestRequest(url, Method.GET, true);
 
             request.AddParameter("since", lastChanged.ToString("yyyy-MM-ddTHH:mm:sszzz"), ParameterType.GetOrPost);
@@ -991,7 +984,7 @@ namespace BambooHrClient
 
             try
             {
-                response = await restClient.ExecuteTaskAsync(request);
+                response = await _iRestClient.ExecuteTaskAsync(request);
             }
             catch (Exception ex)
             {
@@ -1059,14 +1052,6 @@ namespace BambooHrClient
             }
 
             return dateHours;
-        }
-
-        private RestClient GetNewRestClient()
-        {
-            return new RestClient(Config.BambooApiUrl)
-            {
-                Authenticator = new HttpBasicAuthenticator(Config.BambooApiKey, "x")
-            };
         }
 
         private RestRequest GetNewRestRequest(string url, Method method, bool sendingJson, bool binary = false)
