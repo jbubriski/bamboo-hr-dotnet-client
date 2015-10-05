@@ -1,6 +1,6 @@
-[![License LGPLv3](https://img.shields.io/badge/license-mit-green.svg)](https://raw.githubusercontent.com/jbubriski/bamboo-hr-dotnet-client/master/LICENSE.md)
-
 # BambooHR .NET Client
+
+[![License LGPLv3](https://img.shields.io/badge/license-mit-green.svg)](https://raw.githubusercontent.com/jbubriski/bamboo-hr-dotnet-client/master/LICENSE.md)
 
 A .NET client for the BambooHR REST API.
 
