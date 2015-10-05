@@ -1,0 +1,23 @@
+# Travis-CI Build for Bamboo HR .NET Client
+# see travis-ci.org for details
+
+language: csharp
+sudo: false
+
+# Make sure build dependencies are installed.
+install:
+ - travis_retry nuget install .nuget/packages.config -OutputDirectory packages
+ 
+cache: 
+ - apt
+ - directories:
+   - packages
+
+# Run the build script
+script:
+ - xbuild /p:Configuration=Release /verbosity:minimal BambooHrClient.sln
+
+# Only watch the master branch.
+branches:
+ only:
+   - master
