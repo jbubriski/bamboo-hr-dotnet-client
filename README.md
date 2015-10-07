@@ -20,6 +20,7 @@ For the demo project, make sure you update the App.Config with your API stuffs. 
     <add key="BambooApiUser" value="email@example.com" />
     <add key="BambooApiKey" value="sadjlksdfguoi45u498j0sdfjoiksdfj08sdf" />
     <add key="BambooApiUrl" value="https://api.bamboohr.com/api/gateway.php/examplecompanyname/v1" />
+    <add key="BambooCompanyUrl" value="https://examplecompanyname.bamboohr.com" />
 
 If you're using this in the context of a web application project or website project, just add those lines to the `<appSettings>` section of your web.config.
 
