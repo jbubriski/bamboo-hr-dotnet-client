@@ -1,5 +1,7 @@
 # BambooHR .NET Client
 
+[![Build Status](https://img.shields.io/appveyor/ci/jbubriski/bamboo-hr-dotnet-client.svg)](https://ci.appveyor.com/project/jbubriski/bamboo-hr-dotnet-client) [![License LGPLv3](https://img.shields.io/badge/license-mit-green.svg)](https://raw.githubusercontent.com/jbubriski/bamboo-hr-dotnet-client/master/LICENSE.md)
+
 A .NET client for the BambooHR REST API.
 
 
