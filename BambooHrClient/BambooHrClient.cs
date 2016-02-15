@@ -30,6 +30,7 @@ namespace BambooHrClient
 
         Task<string> AddEmployee(BambooHrEmployee bambooHrEmployee);
         Task<BambooHrEmployee> GetEmployee(int employeeId);
+        Task<bool> UpdateEmployee(BambooHrEmployee bambooHrEmployee);
 
         Task<Byte[]> GetEmployeePhoto(int employeeId, string size = "small");
         string GetEmployeePhotoUrl(string employeeEmail);
@@ -277,6 +278,57 @@ namespace BambooHrClient
             var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
             var errorMessage = error != null ? ": " + error.Value : string.Empty;
             throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
+        }
+
+        public async Task<bool> UpdateEmployee(BambooHrEmployee bambooHrEmployee)
+        {
+            if (bambooHrEmployee.Id <= 0)
+            {
+                throw new Exception("ID is required.");
+            }
+
+            var url = $"/employees/{bambooHrEmployee.Id}";
+
+            var request = GetNewRestRequest(url, Method.POST, false);
+
+            var xml = bambooHrEmployee.ToXml();
+
+            request.AddParameter("text/xml", xml, ParameterType.RequestBody);
+
+            IRestResponse response;
+
+            try
+            {
+                response = await _iRestClient.ExecuteTaskAsync(request);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error executing Bamboo request to {url} to update employee '{bambooHrEmployee.FirstName} {bambooHrEmployee.LastName}'.", ex);
+            }
+
+            if (response.ErrorException != null)
+                throw new Exception($"Error executing Bamboo request to {url} to update employee '{bambooHrEmployee.FirstName} {bambooHrEmployee.LastName}'.", response.ErrorException);
+
+            if (response.StatusCode == HttpStatusCode.BadRequest)
+            {
+                throw new Exception($"Bad XML trying to update employee with ID {bambooHrEmployee.Id}.");
+            }
+            else if (response.StatusCode == HttpStatusCode.Forbidden)
+            {
+                throw new Exception($"Either you don't have permissions to update the employee, or none of the requested fields can be updated for employee ID {bambooHrEmployee.Id}.");
+            }
+            else if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                throw new Exception($"Employee not found with the ID {bambooHrEmployee.Id}.");
+            }
+            else if (response.StatusCode == HttpStatusCode.OK)
+            {
+                return true;
+            }
+
+            var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
+            var errorMessage = error != null ? ": " + error.Value : string.Empty;
+            throw new Exception($"Bamboo Response threw error code {response.StatusCode} ({response.StatusDescription}) {errorMessage}");
         }
 
         #endregion

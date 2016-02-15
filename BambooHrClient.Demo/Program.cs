@@ -36,6 +36,14 @@ namespace BambooHrClient.Demo
             //AddEmployee("John", "Doe");
             //Console.WriteLine();
 
+            // THIS WILL UPDATE AN ACTUAL EMPLOYEE IN YOUR SYSTEM
+            // Update the ID to whatever yours is
+            //var employee = await GetEmployee(40525);
+            //employee.FirstName = "John-updated";
+            //UpdateEmployee(employee);
+            //Console.WriteLine("Updated employee first name");
+            //Console.WriteLine();
+
 
             //await DisplayTabluarData(1, BambooHrTableType.Compensation);
             //Console.WriteLine();
@@ -132,6 +140,24 @@ namespace BambooHrClient.Demo
 
             Console.WriteLine($"Employee created at {url}");
             Console.WriteLine(bambooHrEmployee.PropsToString());
+        }
+
+        private async static Task<BambooHrEmployee> GetEmployee(int employeeId)
+        {
+            var bambooHrClient = new BambooHrClient();
+            var employee = await bambooHrClient.GetEmployee(employeeId);
+
+            Console.WriteLine($"Got employee with ID {employee.Id}");
+
+            return employee;
+        }
+
+        private async static void UpdateEmployee(BambooHrEmployee bambooHrEmployee)
+        {
+            var bambooHrClient = new BambooHrClient();
+            await bambooHrClient.UpdateEmployee(bambooHrEmployee);
+
+            Console.WriteLine($"Updated employee with ID {bambooHrEmployee.Id}");
         }
 
         private async static Task DisplayTabluarData(int employeeId, BambooHrTableType tableType)
