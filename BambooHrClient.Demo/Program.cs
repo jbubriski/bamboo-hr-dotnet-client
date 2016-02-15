@@ -152,12 +152,14 @@ namespace BambooHrClient.Demo
             return employee;
         }
 
-        private async static Task<void> UpdateEmployee(BambooHrEmployee bambooHrEmployee)
+        private async static Task<bool> UpdateEmployee(BambooHrEmployee bambooHrEmployee)
         {
             var bambooHrClient = new BambooHrClient();
             await bambooHrClient.UpdateEmployee(bambooHrEmployee);
 
             Console.WriteLine($"Updated employee with ID {bambooHrEmployee.Id}");
+
+            return true;
         }
 
         private async static Task DisplayTabluarData(int employeeId, BambooHrTableType tableType)
