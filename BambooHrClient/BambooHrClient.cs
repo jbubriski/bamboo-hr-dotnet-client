@@ -27,6 +27,8 @@ namespace BambooHrClient
         Task<List<BambooHrEstimate>> GetFutureTimeOffBalanceEstimates(int employeeId, DateTime? endDate = null);
         Task<List<BambooHrWhosOutInfo>> GetWhosOut(DateTime? startDate = null, DateTime? endDate = null);
         Task<List<BambooHrHoliday>> GetHolidays(DateTime startDate, DateTime endDate);
+
+        Task<string> AddEmployee(BambooHrEmployee bambooHrEmployee);
         Task<BambooHrEmployee> GetEmployee(int employeeId);
 
         Task<Byte[]> GetEmployeePhoto(int employeeId, string size = "small");
@@ -176,6 +178,66 @@ namespace BambooHrClient
             throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
         }
 
+        #region Employees
+
+        public async Task<string> AddEmployee(BambooHrEmployee bambooHrEmployee)
+        {
+            if (string.IsNullOrWhiteSpace(bambooHrEmployee.FirstName))
+            {
+                throw new Exception("First name is required.");
+            }
+
+            if (string.IsNullOrWhiteSpace(bambooHrEmployee.LastName))
+            {
+                throw new Exception("Lastname is required.");
+            }
+
+            var url = "/employees/";
+
+            var request = GetNewRestRequest(url, Method.POST, false);
+
+            var xml = bambooHrEmployee.ToXml();
+
+            request.AddParameter("text/xml", xml, ParameterType.RequestBody);
+
+            IRestResponse response;
+
+            try
+            {
+                response = await _iRestClient.ExecuteTaskAsync(request);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error executing Bamboo request to {url} to add employee '{bambooHrEmployee.FirstName} {bambooHrEmployee.LastName}'", ex);
+            }
+
+            if (response.ErrorException != null)
+                throw new Exception($"Error executing Bamboo request to {url} to add employee '{bambooHrEmployee.FirstName} {bambooHrEmployee.LastName}'", response.ErrorException);
+
+            if (response.StatusCode == HttpStatusCode.Conflict)
+            {
+                throw new Exception($"There is already an employee with the email address {bambooHrEmployee.WorkEmail}.");
+            }
+
+            if (response.StatusCode == HttpStatusCode.Created)
+            {
+                var location = response.Headers.Single(h => h.Name == "Location").Value.ToString();
+                var id = Regex.Match(location, @"\d+$").Value;
+                bambooHrEmployee.Id = int.Parse(id);
+
+                if (!string.IsNullOrWhiteSpace(location))
+                {
+                    return location;
+                }
+
+                throw new Exception("Bamboo Response does not contain Employee");
+            }
+
+            var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
+            var errorMessage = error != null ? ": " + error.Value : string.Empty;
+            throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
+        }
+
         public async Task<BambooHrEmployee> GetEmployee(int employeeId)
         {
             var url = "/employees/" + employeeId;
@@ -217,6 +279,7 @@ namespace BambooHrClient
             throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
         }
 
+        #endregion
 
         #region Photos
 
@@ -356,7 +419,7 @@ namespace BambooHrClient
             {
                 throw new Exception($"Can't create Time Off Request in {nameof(CreateTimeOffRequest)}, Employee ID {employeeId} not found.");
             }
-            
+
             var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
             var errorMessage = error != null ? ": " + error.Value : string.Empty;
             throw new Exception($"Bamboo Response threw error code {response.StatusCode} ({response.StatusDescription}) {errorMessage} in {nameof(CreateTimeOffRequest)}");
@@ -672,7 +735,7 @@ namespace BambooHrClient
         }
 
         // See inner todo regarding this pragma
-        #pragma warning disable 1998
+#pragma warning disable 1998
         public async Task<List<BambooHrHoliday>> GetHolidays(DateTime startDate, DateTime endDate)
         {
             const string url = "/time_off/holidays/";
@@ -719,7 +782,7 @@ namespace BambooHrClient
             var errorMessage = error != null ? ": " + error.Value : string.Empty;
             throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
         }
-        #pragma warning restore 1998
+#pragma warning restore 1998
 
         public string GetDatesXml(DateTime startDate, DateTime endDate, bool startHalfDay, bool endHalfDay, List<DateTime> holidays)
         {
@@ -1075,6 +1138,10 @@ namespace BambooHrClient
             {
                 request.AddHeader("Content-Type", "application/json");
                 request.AddParameter("format", "JSON", ParameterType.QueryString);
+            }
+            else
+            {
+                request.AddHeader("Content-Type", "text/xml");
             }
 
             return request;

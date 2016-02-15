@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Xml.Linq;
+using System.Xml.Serialization;
 
 namespace BambooHrClient.Models
 {
@@ -8,6 +10,7 @@ namespace BambooHrClient.Models
         public List<BambooHrEmployee> Employees { get; set; }
     }
 
+    [XmlType(TypeName = "employee")]
     public class BambooHrEmployee
     {
         public int Id { get; set; }
@@ -71,6 +74,18 @@ namespace BambooHrClient.Models
 
                 return FirstName + " " + LastName;
             }
+        }
+
+        public string ToXml()
+        {
+            var xElement = new XElement("employee");
+
+            xElement.AddFieldValueIfNotNull("firstName", FirstName);
+            xElement.AddFieldValueIfNotNull("lastName", LastName);
+            xElement.AddFieldValueIfNotNull("workEmail", WorkEmail);
+            // TODO: Implement the rest of the props
+
+            return xElement.ToString();
         }
     }
 }

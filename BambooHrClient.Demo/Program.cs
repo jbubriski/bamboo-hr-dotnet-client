@@ -28,7 +28,12 @@ namespace BambooHrClient.Demo
             //ListHolidays();
             //Console.WriteLine();
 
+
             //DisplayEmployeeInfos();
+            //Console.WriteLine();
+
+            // THIS WILL CREATE AN ACTUAL EMPLOYEE IN YOUR SYSTEM
+            //AddEmployee("John", "Doe");
             //Console.WriteLine();
 
 
@@ -110,6 +115,23 @@ namespace BambooHrClient.Demo
             // Display the details of the last employee in the list to compare to the regular GetEmployee call
             Console.WriteLine();
             Console.WriteLine(employees.Last().PropsToString());
+        }
+
+        private async static void AddEmployee(string firstName, string lastName)
+        {
+            var bambooHrClient = new BambooHrClient();
+
+            var bambooHrEmployee = new BambooHrEmployee
+            {
+                FirstName = firstName,
+                LastName = lastName,
+                WorkEmail = "jd@example.com"
+            };
+
+            var url = await bambooHrClient.AddEmployee(bambooHrEmployee);
+
+            Console.WriteLine($"Employee created at {url}");
+            Console.WriteLine(bambooHrEmployee.PropsToString());
         }
 
         private async static Task DisplayTabluarData(int employeeId, BambooHrTableType tableType)
