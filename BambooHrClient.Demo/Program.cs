@@ -23,11 +23,11 @@ namespace BambooHrClient.Demo
 
         static async Task MainAsync(string[] args)
         {
-            // Uncomment the following examples to try them out
-
             // Update the ID to whatever your test employee is
             var employeeId = 40525;
             var workEmail = "jd@example.com";
+
+            // Uncomment the following examples to try them out
 
             //ListHolidays();
             //Console.WriteLine();
@@ -74,14 +74,14 @@ namespace BambooHrClient.Demo
             Console.WriteLine();
 
 
-            await DownloadEmployeePhoto(employeeId);
-            Console.WriteLine();
+            //await DownloadEmployeePhoto(employeeId);
+            //Console.WriteLine();
 
-            DisplayEmployeePhotoUrl(workEmail);
-            Console.WriteLine();
+            //DisplayEmployeePhotoUrl(workEmail);
+            //Console.WriteLine();
 
-            await UploadloadEmployeePhoto(employeeId);
-            Console.WriteLine();
+            //await UploadloadEmployeePhoto(employeeId);
+            //Console.WriteLine();
 
 
             //await DisplayFields();
