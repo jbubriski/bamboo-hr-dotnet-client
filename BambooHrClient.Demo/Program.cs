@@ -172,7 +172,7 @@ namespace BambooHrClient.Demo
             File.WriteAllBytes(@"C:\test.jpeg", fileData);
         }
 
-        private async static void DisplayEmployeePhotoUrl(string employeeEmail)
+        private static void DisplayEmployeePhotoUrl(string employeeEmail)
         {
             var bambooHrClient = new BambooHrClient();
 

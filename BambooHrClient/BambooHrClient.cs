@@ -671,6 +671,8 @@ namespace BambooHrClient
             throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
         }
 
+        // See inner todo regarding this pragma
+        #pragma warning disable 1998
         public async Task<List<BambooHrHoliday>> GetHolidays(DateTime startDate, DateTime endDate)
         {
             const string url = "/time_off/holidays/";
@@ -717,6 +719,7 @@ namespace BambooHrClient
             var errorMessage = error != null ? ": " + error.Value : string.Empty;
             throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
         }
+        #pragma warning restore 1998
 
         public string GetDatesXml(DateTime startDate, DateTime endDate, bool startHalfDay, bool endHalfDay, List<DateTime> holidays)
         {
