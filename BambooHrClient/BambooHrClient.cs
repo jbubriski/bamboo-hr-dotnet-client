@@ -34,6 +34,7 @@ namespace BambooHrClient
 
         Task<Byte[]> GetEmployeePhoto(int employeeId, string size = "small");
         string GetEmployeePhotoUrl(string employeeEmail);
+        Task<bool> UploadEmployeePhoto(int employeeId, byte[] binaryData, string fileName);
 
         Task<BambooHrField[]> GetFields();
         Task<BambooHrTable[]> GetTabularFields();
@@ -385,6 +386,62 @@ namespace BambooHrClient
             var url = string.Format(Config.BambooCompanyUrl + "/employees/photos/?h={0}", hashedEmail);
 
             return url;
+        }
+
+        /// <summary>
+        /// The width and height of the photo must be the same number of pixels.
+        /// The API user must have photo uploading permission.
+        /// The source photo must be a jpg, gif, or png.
+        /// The photo file may not be larger than 20MB.
+        /// </summary>
+        /// <param name="employeeId"></param>
+        /// <param name="binaryData"></param>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public async Task<bool> UploadEmployeePhoto(int employeeId, byte[] binaryData, string fileName)
+        {
+            var url = $"/employees/{employeeId}/photo";
+            var request = GetNewRestRequest(url, Method.POST, true);
+
+            request.AddFile("file", binaryData, fileName);
+            request.AddHeader("Content-Type", "multipart/form-data");
+
+            IRestResponse response;
+
+            try
+            {
+                response = await _iRestClient.ExecuteTaskAsync(request);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(string.Format("Error executing Bamboo request to {0} for employee ID {1}", url, employeeId), ex);
+            }
+
+            if (response.ErrorException != null)
+            {
+                throw new Exception(string.Format("Error executing Bamboo request to {0} for employee ID {1}", url, employeeId), response.ErrorException);
+            }
+
+            if (response.StatusCode == HttpStatusCode.BadRequest)
+            {
+                throw new Exception($"Employee {employeeId} doesn't exist.");
+            }
+            else if (response.StatusCode == HttpStatusCode.RequestEntityTooLarge)
+            {
+                throw new Exception($"Employee {employeeId} photo file size too big, max size is 20MB.");
+            }
+            else if (response.StatusCode == HttpStatusCode.UnsupportedMediaType)
+            {
+                throw new Exception($"Employee {employeeId} photo file not in a supported file format or width doesn't match the height.");
+            }
+            else if (response.StatusCode == HttpStatusCode.Created)
+            {
+                return true;
+            }
+
+            var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
+            var errorMessage = error != null ? ": " + error.Value : string.Empty;
+            throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
         }
 
         /// <summary>

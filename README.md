@@ -69,10 +69,10 @@ Here is a probably-mostly-up-to-date list of implemented API calls:
     - [ ] - Add a time off history override
     - [x] - Estimate future time off balances
     - [x] - Get a list of who's out, including company holidays
-- [ ] - Photos
+- [x] - Photos
     - [x] - Get an employee photo
-    - [ ] - Upload an employee photo
-    - [-] - Using a photo from BambooHR's servers (Not fully tested)
+    - [x] - Upload an employee photo
+    - [x] - Using a photo from BambooHR's servers
 - [ ] - Metadata
     - [x] - Get a list of fields
     - [x] - Get a list of tabular fields

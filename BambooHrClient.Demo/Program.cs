@@ -25,6 +25,10 @@ namespace BambooHrClient.Demo
         {
             // Uncomment the following examples to try them out
 
+            // Update the ID to whatever your test employee is
+            var employeeId = 40525;
+            var workEmail = "jd@example.com";
+
             //ListHolidays();
             //Console.WriteLine();
 
@@ -33,12 +37,11 @@ namespace BambooHrClient.Demo
             //Console.WriteLine();
 
             // THIS WILL CREATE AN ACTUAL EMPLOYEE IN YOUR SYSTEM
-            //AddEmployee("John", "Doe");
+            //AddEmployee("John", "Doe", workEmail);
             //Console.WriteLine();
 
             // THIS WILL UPDATE AN ACTUAL EMPLOYEE IN YOUR SYSTEM
-            // Update the ID to whatever yours is
-            //var employee = await GetEmployee(40525);
+            //var employee = await GetEmployee(employeeId);
             //employee.FirstName = "John-updated2";
             //await UpdateEmployee(employee);
             //Console.WriteLine("Updated employee first name");
@@ -71,11 +74,14 @@ namespace BambooHrClient.Demo
             Console.WriteLine();
 
 
-            //GetEmployeePhoto(123456789);
-            //Console.WriteLine();
+            await DownloadEmployeePhoto(employeeId);
+            Console.WriteLine();
 
-            //GetEmployeePhotoUrl("test@example.com");
-            //Console.WriteLine();
+            DisplayEmployeePhotoUrl(workEmail);
+            Console.WriteLine();
+
+            await UploadloadEmployeePhoto(employeeId);
+            Console.WriteLine();
 
 
             //await DisplayFields();
@@ -125,7 +131,7 @@ namespace BambooHrClient.Demo
             Console.WriteLine(employees.Last().PropsToString());
         }
 
-        private async static void AddEmployee(string firstName, string lastName)
+        private async static void AddEmployee(string firstName, string lastName, string workEmail)
         {
             var bambooHrClient = new BambooHrClient();
 
@@ -133,7 +139,7 @@ namespace BambooHrClient.Demo
             {
                 FirstName = firstName,
                 LastName = lastName,
-                WorkEmail = "jd@example.com"
+                WorkEmail = workEmail
             };
 
             var url = await bambooHrClient.AddEmployee(bambooHrEmployee);
@@ -220,15 +226,28 @@ namespace BambooHrClient.Demo
             var fileData = await bambooHrClient.GetEmployeePhoto(employeeId);
 
             File.WriteAllBytes(@"C:\test.jpeg", fileData);
-        }
 
-        private static void DisplayEmployeePhotoUrl(string employeeEmail)
+            Console.WriteLine("Photo downloaded.");
+        }
+        
+        private static void DisplayEmployeePhotoUrl(string workEmail)
         {
             var bambooHrClient = new BambooHrClient();
 
-            var url = bambooHrClient.GetEmployeePhotoUrl(employeeEmail);
+            var photoUrl = bambooHrClient.GetEmployeePhotoUrl(workEmail);
 
-            Console.WriteLine(url);
+            Console.WriteLine($"The photo URL for {workEmail} is '{photoUrl}'.");
+        }
+
+        private async static Task UploadloadEmployeePhoto(int employeeId)
+        {
+            var bambooHrClient = new BambooHrClient();
+
+            var binaryData = File.ReadAllBytes(@"C:\test.jpeg");
+
+            var fileData = await bambooHrClient.UploadEmployeePhoto(employeeId, binaryData, "test.jpeg");
+
+            Console.WriteLine("Photo uploaded.");
         }
 
         private async static Task DisplayFields()
