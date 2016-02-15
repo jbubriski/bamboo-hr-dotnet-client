@@ -80,10 +80,41 @@ namespace BambooHrClient.Models
         {
             var xElement = new XElement("employee");
 
+            xElement.AddFieldValueIfNotNull("status", Status);
+
             xElement.AddFieldValueIfNotNull("firstName", FirstName);
+            xElement.AddFieldValueIfNotNull("middleName", MiddleName);
             xElement.AddFieldValueIfNotNull("lastName", LastName);
+            xElement.AddFieldValueIfNotNull("nickname", Nickname);
+            xElement.AddFieldValueIfNotNull("displayName", DisplayName);
+            xElement.AddFieldValueIfNotNull("gender", Gender);
+            xElement.AddFieldValueIfNotNull("dateOfBirth", DateOfBirth);
+            xElement.AddFieldValueIfNotNull("age", Age.ToString());
+
+            xElement.AddFieldValueIfNotNull("address1", Address1);
+            xElement.AddFieldValueIfNotNull("address2", Address2);
+            xElement.AddFieldValueIfNotNull("city", City);
+            xElement.AddFieldValueIfNotNull("state", State);
+            xElement.AddFieldValueIfNotNull("country", Country);
+            xElement.AddFieldValueIfNotNull("zipCode", ZipCode);
+
+            xElement.AddFieldValueIfNotNull("homeEmail", HomeEmail);
+            xElement.AddFieldValueIfNotNull("homePhone", HomePhone);
+            xElement.AddFieldValueIfNotNull("mobilePhone", MobilePhone);
+
             xElement.AddFieldValueIfNotNull("workEmail", WorkEmail);
-            // TODO: Implement the rest of the props
+            xElement.AddFieldValueIfNotNull("workPhone", WorkPhone);
+            xElement.AddFieldValueIfNotNull("workPhoneExtension", WorkPhoneExtension);
+
+            xElement.AddFieldValueIfNotNull("jobTitle", JobTitle);
+            xElement.AddFieldValueIfNotNull("department", Department);
+            xElement.AddFieldValueIfNotNull("location", Location);
+            xElement.AddFieldValueIfNotNull("division", Division);
+
+            xElement.AddFieldValueIfNotNull("terminationDate", TerminationDate);
+
+            xElement.AddFieldValueIfNotNull("supervisorId", SupervisorId);
+            xElement.AddFieldValueIfNotNull("supervisorEid", SupervisorEid);
 
             return xElement.ToString();
         }

@@ -39,8 +39,8 @@ namespace BambooHrClient.Demo
             // THIS WILL UPDATE AN ACTUAL EMPLOYEE IN YOUR SYSTEM
             // Update the ID to whatever yours is
             //var employee = await GetEmployee(40525);
-            //employee.FirstName = "John-updated";
-            //UpdateEmployee(employee);
+            //employee.FirstName = "John-updated2";
+            //await UpdateEmployee(employee);
             //Console.WriteLine("Updated employee first name");
             //Console.WriteLine();
 
@@ -152,7 +152,7 @@ namespace BambooHrClient.Demo
             return employee;
         }
 
-        private async static void UpdateEmployee(BambooHrEmployee bambooHrEmployee)
+        private async static Task<void> UpdateEmployee(BambooHrEmployee bambooHrEmployee)
         {
             var bambooHrClient = new BambooHrClient();
             await bambooHrClient.UpdateEmployee(bambooHrEmployee);
