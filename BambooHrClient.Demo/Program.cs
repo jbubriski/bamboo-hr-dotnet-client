@@ -11,6 +11,18 @@ namespace BambooHrClient.Demo
     {
         static void Main(string[] args)
         {
+            try
+            {
+                Task.WaitAll(MainAsync(args));
+            }
+            catch (Exception ex)
+            {
+                throw ex.InnerException;
+            }
+        }
+
+        static async Task MainAsync(string[] args)
+        {
             // Uncomment the following examples to try them out
 
             //ListHolidays();
@@ -20,30 +32,30 @@ namespace BambooHrClient.Demo
             //Console.WriteLine();
 
 
-            //Task.WaitAll(DisplayTabluarData(1, BambooHrTableType.Compensation));
+            //await DisplayTabluarData(1, BambooHrTableType.Compensation);
             //Console.WriteLine();
-            //Task.WaitAll(DisplayTabluarData(1, BambooHrTableType.Dependents));
+            //await DisplayTabluarData(1, BambooHrTableType.Dependents);
             //Console.WriteLine();
-            //Task.WaitAll(DisplayTabluarData(1, BambooHrTableType.EmergencyContacts));
+            //await DisplayTabluarData(1, BambooHrTableType.EmergencyContacts);
             //Console.WriteLine();
-            //Task.WaitAll(DisplayTabluarData(1, BambooHrTableType.EmploymentStatus));
+            //await DisplayTabluarData(1, BambooHrTableType.EmploymentStatus);
             //Console.WriteLine();
-            //Task.WaitAll(DisplayTabluarData(1, BambooHrTableType.JobInfo));
+            //await DisplayTabluarData(1, BambooHrTableType.JobInfo);
             //Console.WriteLine();
 
 
             // THIS WILL CREATE AN ACTUAL TIME OFF REQUEST IN YOUR SYSTEM
-            //CreateTimeOffRequest();
+            //await CreateTimeOffRequest();
             //Console.WriteLine();
 
-            //Task.WaitAll(DisplayAssignedTimeOffPolicies(1));
+            //await DisplayAssignedTimeOffPolicies(1);
             //Console.WriteLine();
 
-            //Task.WaitAll(DisplayFutureTimeOffBalanceEstimates());
+            //await DisplayFutureTimeOffBalanceEstimates();
             //Console.WriteLine();
 
-            //Task.WaitAll(DisplayWhosOut());
-            //Console.WriteLine();
+            await DisplayWhosOut();
+            Console.WriteLine();
 
 
             //GetEmployeePhoto(123456789);
@@ -53,29 +65,29 @@ namespace BambooHrClient.Demo
             //Console.WriteLine();
 
 
-            //Task.WaitAll(DisplayFields());
+            //await DisplayFields();
             //Console.WriteLine();
 
-            //Task.WaitAll(DisplayTabularFields());
+            //await DisplayTabularFields();
             //Console.WriteLine();
 
-            //Task.WaitAll(DisplayListFieldDetails());
+            //await DisplayListFieldDetails();
             //Console.WriteLine();
 
-            //Task.WaitAll(DisplayTimeOffTypes());
+            //await DisplayTimeOffTypes();
             //Console.WriteLine();
 
-            //Task.WaitAll(DisplayTimeOffTypesByPermissions());
+            //await DisplayTimeOffTypesByPermissions();
             //Console.WriteLine();
 
-            //Task.WaitAll(DisplayTimeOffPolicies());
+            //await DisplayTimeOffPolicies();
             //Console.WriteLine();
 
-            //Task.WaitAll(DisplayUsers());
+            //await DisplayUsers();
             //Console.WriteLine();
 
 
-            //Task.WaitAll(DisplayLastChangedInfo());
+            //await DisplayLastChangedInfo();
             //Console.WriteLine();
 
 
@@ -316,7 +328,11 @@ namespace BambooHrClient.Demo
 
             var employee = bambooHrClient.GetEmployee(userId);
 
-            return await bambooHrClient.CreateTimeOffRequest(employee.Id, timeOffTypeId, startDate, endDate);
+            var result = await bambooHrClient.CreateTimeOffRequest(employee.Id, timeOffTypeId, startDate, endDate);
+
+            Console.WriteLine($"Result: {result}");
+
+            return result;
         }
 
         /// <summary>

@@ -352,10 +352,14 @@ namespace BambooHrClient
 
                 return timeOffRequestId;
             }
-
+            else if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                throw new Exception($"Can't create Time Off Request in {nameof(CreateTimeOffRequest)}, Employee ID {employeeId} not found.");
+            }
+            
             var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
             var errorMessage = error != null ? ": " + error.Value : string.Empty;
-            throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
+            throw new Exception($"Bamboo Response threw error code {response.StatusCode} ({response.StatusDescription}) {errorMessage} in {nameof(CreateTimeOffRequest)}");
         }
 
         private async Task<bool> AddTimeOffRequestHistoryEntry(int employeeId, int timeOffRequestId, DateTime date)
