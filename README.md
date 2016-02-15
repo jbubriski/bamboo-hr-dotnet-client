@@ -34,10 +34,10 @@ At some point, I may provide a programmatic way to configure this information fo
 Here is a probably-mostly-up-to-date list of implemented API calls:
 
 - [ ] - Single Dimensional Data
-    - [ ] - Employees
-        - [ ] - Add an employee
+    - [-] - Employees
+        - [x] - Add an employee
         - [x] - Get an employee
-        - [ ] - Update an employee
+        - [x] - Update an employee
         - [-] - Get a directory of employees (sort of, through custom report)
     - [ ] - Reports
         - [ ] - Request a company report
