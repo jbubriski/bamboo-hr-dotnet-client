@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -26,6 +27,7 @@ namespace BambooHrClient.Demo
             // Update the ID to whatever your test employee is
             var employeeId = 40525;
             var workEmail = "jd@example.com";
+            var testListId = 3434;
 
             // Uncomment the following examples to try them out
 
@@ -92,6 +94,9 @@ namespace BambooHrClient.Demo
 
             //await DisplayListFieldDetails();
             //Console.WriteLine();
+
+            await AddOrUpdateListValues(testListId);
+            Console.WriteLine();
 
             //await DisplayTimeOffTypes();
             //Console.WriteLine();
@@ -229,7 +234,7 @@ namespace BambooHrClient.Demo
 
             Console.WriteLine("Photo downloaded.");
         }
-        
+
         private static void DisplayEmployeePhotoUrl(string workEmail)
         {
             var bambooHrClient = new BambooHrClient();
@@ -296,6 +301,20 @@ namespace BambooHrClient.Demo
                     Console.WriteLine(option.PropsToString());
                 }
             }
+        }
+
+        private async static Task AddOrUpdateListValues(int listId)
+        {
+            var values = new List<BambooHrListFieldOption>
+            {
+                new BambooHrListFieldOption { Value="New Option" }
+            };
+
+            var bambooHrClient = new BambooHrClient();
+
+            var results = await bambooHrClient.AddOrUpdateListValues(listId, values);
+
+            Console.WriteLine("List values added/updated");
         }
 
         public async static Task DisplayTimeOffTypes()

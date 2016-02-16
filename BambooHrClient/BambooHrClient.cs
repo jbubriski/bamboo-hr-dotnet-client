@@ -39,6 +39,7 @@ namespace BambooHrClient
         Task<BambooHrField[]> GetFields();
         Task<BambooHrTable[]> GetTabularFields();
         Task<List<BambooHrListField>> GetListFieldDetails();
+        Task<BambooHrListField> AddOrUpdateListValues(int listId, List<BambooHrListFieldOption> values);
         Task<BambooHrTimeOffTypeInfo> GetTimeOffTypes(string mode = "");
         Task<BambooHrTimeOffPolicy[]> GetTimeOffPolicies();
         Task<BambooHrUser[]> GetUsers();
@@ -1022,6 +1023,57 @@ namespace BambooHrClient
             var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
             var errorMessage = error != null ? ": " + error.Value : string.Empty;
             throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
+        }
+
+        public async Task<BambooHrListField> AddOrUpdateListValues(int listId, List<BambooHrListFieldOption> values)
+        {
+            var url = $"/meta/lists/{listId}";
+            var request = GetNewRestRequest(url, Method.PUT, false);
+            
+            request.XmlSerializer = new BambooHrListFieldOptionSerializer();
+            request.AddXmlBody(values);
+
+            IRestResponse<BambooHrListField> response;
+
+            try
+            {
+                response = await _iRestClient.ExecuteTaskAsync<BambooHrListField>(request);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Error executing Bamboo request to {url}", ex);
+            }
+
+            if (response.ErrorException != null)
+                throw new Exception($"Error executing Bamboo request to {url}", response.ErrorException);
+
+            if (response.StatusCode == HttpStatusCode.BadRequest)
+            {
+                throw new Exception($"Bad XML trying to add or update list value in list with ID {listId}.");
+            }
+            if (response.StatusCode == HttpStatusCode.Forbidden)
+            {
+                throw new Exception($"The list with ID {listId} is not editable.");
+            }
+            else if (response.StatusCode == HttpStatusCode.NotFound)
+            {
+                throw new Exception($"List or option not found when trying to add or update list value for list with ID {listId}.");
+            }
+            else if (response.StatusCode == HttpStatusCode.Conflict)
+            {
+                throw new Exception($"Can't create duplicate list value in list with ID {listId}.");
+            }
+            else if (response.StatusCode == HttpStatusCode.OK)
+            {
+                if (response.Data != null)
+                    return response.Data;
+
+                throw new Exception("Bamboo Response does not contain data");
+            }
+
+            var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
+            var errorMessage = error != null ? ": " + error.Value : string.Empty;
+            throw new Exception($"Bamboo Response threw error code {response.StatusCode} ({response.StatusDescription}) {errorMessage} in {nameof(CreateTimeOffRequest)}");
         }
 
         public async Task<BambooHrTimeOffTypeInfo> GetTimeOffTypes(string mode = "")
