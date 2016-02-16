@@ -133,10 +133,10 @@ namespace BambooHrClient
                 throw new Exception("Bamboo Response does not contain data.");
             }
 
-            var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
-            var errorMessage = error != null ? ": " + error.Value : string.Empty;
-            throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
+            throw new Exception($"Bamboo Response threw error code {response.StatusCode} ({response.StatusDescription}) {response.GetBambooHrErrorMessage()} in {nameof(GetTabularData)}");
         }
+
+        #region Employees
 
         public async Task<List<BambooHrEmployee>> GetEmployees()
         {
@@ -176,12 +176,8 @@ namespace BambooHrClient
                 throw new Exception("Bamboo Response does not contain Employees collection");
             }
 
-            var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
-            var errorMessage = error != null ? ": " + error.Value : string.Empty;
-            throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
+            throw new Exception($"Bamboo Response threw error code {response.StatusCode} ({response.StatusDescription}) {response.GetBambooHrErrorMessage()} in {nameof(GetEmployees)}");
         }
-
-        #region Employees
 
         public async Task<string> AddEmployee(BambooHrEmployee bambooHrEmployee)
         {
@@ -236,9 +232,7 @@ namespace BambooHrClient
                 throw new Exception("Bamboo Response does not contain Employee");
             }
 
-            var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
-            var errorMessage = error != null ? ": " + error.Value : string.Empty;
-            throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
+            throw new Exception($"Bamboo Response threw error code {response.StatusCode} ({response.StatusDescription}) {response.GetBambooHrErrorMessage()} in {nameof(AddEmployee)}");
         }
 
         public async Task<BambooHrEmployee> GetEmployee(int employeeId)
@@ -277,9 +271,7 @@ namespace BambooHrClient
                 throw new Exception("Bamboo Response does not contain Employee");
             }
 
-            var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
-            var errorMessage = error != null ? ": " + error.Value : string.Empty;
-            throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
+            throw new Exception($"Bamboo Response threw error code {response.StatusCode} ({response.StatusDescription}) {response.GetBambooHrErrorMessage()} in {nameof(GetEmployee)}");
         }
 
         public async Task<bool> UpdateEmployee(BambooHrEmployee bambooHrEmployee)
@@ -328,9 +320,7 @@ namespace BambooHrClient
                 return true;
             }
 
-            var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
-            var errorMessage = error != null ? ": " + error.Value : string.Empty;
-            throw new Exception($"Bamboo Response threw error code {response.StatusCode} ({response.StatusDescription}) {errorMessage}");
+            throw new Exception($"Bamboo Response threw error code {response.StatusCode} ({response.StatusDescription}) {response.GetBambooHrErrorMessage()} in {nameof(UpdateEmployee)}");
         }
 
         #endregion
@@ -376,9 +366,7 @@ namespace BambooHrClient
                 throw new Exception("Bamboo Response does not contain file data");
             }
 
-            var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
-            var errorMessage = error != null ? ": " + error.Value : string.Empty;
-            throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
+            throw new Exception($"Bamboo Response threw error code {response.StatusCode} ({response.StatusDescription}) {response.GetBambooHrErrorMessage()} in {nameof(GetEmployeePhoto)}");
         }
 
         public string GetEmployeePhotoUrl(string employeeEmail)
@@ -440,9 +428,7 @@ namespace BambooHrClient
                 return true;
             }
 
-            var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
-            var errorMessage = error != null ? ": " + error.Value : string.Empty;
-            throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
+            throw new Exception($"Bamboo Response threw error code {response.StatusCode} ({response.StatusDescription}) {response.GetBambooHrErrorMessage()} in {nameof(UploadEmployeePhoto)}");
         }
 
         /// <summary>
@@ -530,9 +516,7 @@ namespace BambooHrClient
                 throw new Exception($"Can't create Time Off Request in {nameof(CreateTimeOffRequest)}, Employee ID {employeeId} not found.");
             }
 
-            var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
-            var errorMessage = error != null ? ": " + error.Value : string.Empty;
-            throw new Exception($"Bamboo Response threw error code {response.StatusCode} ({response.StatusDescription}) {errorMessage} in {nameof(CreateTimeOffRequest)}");
+            throw new Exception($"Bamboo Response threw error code {response.StatusCode} ({response.StatusDescription}) {response.GetBambooHrErrorMessage()} in {nameof(CreateTimeOffRequest)}");
         }
 
         private async Task<bool> AddTimeOffRequestHistoryEntry(int employeeId, int timeOffRequestId, DateTime date)
@@ -566,10 +550,7 @@ namespace BambooHrClient
                 return true;
             }
 
-            var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
-            var errorMessage = error != null ? ": " + error.Value : string.Empty;
-
-            throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
+            throw new Exception($"Bamboo Response threw error code {response.StatusCode} ({response.StatusDescription}) {response.GetBambooHrErrorMessage()} in {nameof(AddTimeOffRequestHistoryEntry)}");
         }
 
         public async Task<List<BambooHrTimeOffRequest>> GetTimeOffRequests(int employeeId)
@@ -614,9 +595,7 @@ namespace BambooHrClient
                 throw new Exception("Bamboo Response does not contain data.");
             }
 
-            var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
-            var errorMessage = error != null ? ": " + error.Value : string.Empty;
-            throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
+            throw new Exception($"Bamboo Response threw error code {response.StatusCode} ({response.StatusDescription}) {response.GetBambooHrErrorMessage()} in {nameof(GetTimeOffRequests)}");
         }
 
         public async Task<BambooHrTimeOffRequest> GetTimeOffRequest(int timeOffRequestId)
@@ -661,9 +640,7 @@ namespace BambooHrClient
                 throw new Exception("Bamboo Response does not contain data.");
             }
 
-            var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
-            var errorMessage = error != null ? ": " + error.Value : string.Empty;
-            throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
+            throw new Exception($"Bamboo Response threw error code {response.StatusCode} ({response.StatusDescription}) {response.GetBambooHrErrorMessage()} in {nameof(GetTimeOffRequest)}");
         }
 
         public async Task<bool> CancelTimeOffRequest(int timeOffRequestId, string reason = null)
@@ -695,9 +672,7 @@ namespace BambooHrClient
                 return true;
             }
 
-            var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
-            var errorMessage = error != null ? ": " + error.Value : string.Empty;
-            throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
+            throw new Exception($"Bamboo Response threw error code {response.StatusCode} ({response.StatusDescription}) {response.GetBambooHrErrorMessage()} in {nameof(CancelTimeOffRequest)}");
         }
 
         public async Task<List<BambooHrAssignedTimeOffPolicy>> GetAssignedTimeOffPolicies(int employeeId)
@@ -740,9 +715,7 @@ namespace BambooHrClient
                 throw new Exception("Bamboo Response does not contain data.");
             }
 
-            var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
-            var errorMessage = error != null ? ": " + error.Value : string.Empty;
-            throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
+            throw new Exception($"Bamboo Response threw error code {response.StatusCode} ({response.StatusDescription}) {response.GetBambooHrErrorMessage()} in {nameof(GetAssignedTimeOffPolicies)}");
         }
 
         public async Task<List<BambooHrEstimate>> GetFutureTimeOffBalanceEstimates(int employeeId, DateTime? endDate = null)
@@ -788,9 +761,7 @@ namespace BambooHrClient
                 throw new Exception("Bamboo Response does not contain data.");
             }
 
-            var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
-            var errorMessage = error != null ? ": " + error.Value : string.Empty;
-            throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
+            throw new Exception($"Bamboo Response threw error code {response.StatusCode} ({response.StatusDescription}) {response.GetBambooHrErrorMessage()} in {nameof(GetFutureTimeOffBalanceEstimates)}");
         }
 
         public async Task<List<BambooHrWhosOutInfo>> GetWhosOut(DateTime? startDate = null, DateTime? endDate = null)
@@ -839,9 +810,7 @@ namespace BambooHrClient
                 throw new Exception("Bamboo Response does not contain data.");
             }
 
-            var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
-            var errorMessage = error != null ? ": " + error.Value : string.Empty;
-            throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
+            throw new Exception($"Bamboo Response threw error code {response.StatusCode} ({response.StatusDescription}) {response.GetBambooHrErrorMessage()} in {nameof(GetWhosOut)}");
         }
 
         // See inner todo regarding this pragma
@@ -888,9 +857,7 @@ namespace BambooHrClient
                 throw new Exception("Bamboo Response does not contain Holidays collection");
             }
 
-            var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
-            var errorMessage = error != null ? ": " + error.Value : string.Empty;
-            throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
+            throw new Exception($"Bamboo Response threw error code {response.StatusCode} ({response.StatusDescription}) {response.GetBambooHrErrorMessage()} in {nameof(GetHolidays)}");
         }
 #pragma warning restore 1998
 
@@ -948,9 +915,7 @@ namespace BambooHrClient
                 throw new Exception("Bamboo Response does not contain file data");
             }
 
-            var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
-            var errorMessage = error != null ? ": " + error.Value : string.Empty;
-            throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
+            throw new Exception($"Bamboo Response threw error code {response.StatusCode} ({response.StatusDescription}) {response.GetBambooHrErrorMessage()} in {nameof(GetFields)}");
         }
 
         public async Task<BambooHrTable[]> GetTabularFields()
@@ -984,9 +949,7 @@ namespace BambooHrClient
                 throw new Exception("Bamboo Response does not contain data");
             }
 
-            var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
-            var errorMessage = error != null ? ": " + error.Value : string.Empty;
-            throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
+            throw new Exception($"Bamboo Response threw error code {response.StatusCode} ({response.StatusDescription}) {response.GetBambooHrErrorMessage()} in {nameof(GetTabularFields)}");
         }
 
         public async Task<List<BambooHrListField>> GetListFieldDetails()
@@ -1020,16 +983,14 @@ namespace BambooHrClient
                 throw new Exception("Bamboo Response does not contain data");
             }
 
-            var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
-            var errorMessage = error != null ? ": " + error.Value : string.Empty;
-            throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
+            throw new Exception($"Bamboo Response threw error code {response.StatusCode} ({response.StatusDescription}) {response.GetBambooHrErrorMessage()} in {nameof(GetListFieldDetails)}");
         }
 
         public async Task<BambooHrListField> AddOrUpdateListValues(int listId, List<BambooHrListFieldOption> values)
         {
             var url = $"/meta/lists/{listId}";
             var request = GetNewRestRequest(url, Method.PUT, false);
-            
+
             request.XmlSerializer = new BambooHrListFieldOptionSerializer();
             request.AddXmlBody(values);
 
@@ -1071,9 +1032,7 @@ namespace BambooHrClient
                 throw new Exception("Bamboo Response does not contain data");
             }
 
-            var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
-            var errorMessage = error != null ? ": " + error.Value : string.Empty;
-            throw new Exception($"Bamboo Response threw error code {response.StatusCode} ({response.StatusDescription}) {errorMessage} in {nameof(CreateTimeOffRequest)}");
+            throw new Exception($"Bamboo Response threw error code {response.StatusCode} ({response.StatusDescription}) {response.GetBambooHrErrorMessage()} in {nameof(AddOrUpdateListValues)}");
         }
 
         public async Task<BambooHrTimeOffTypeInfo> GetTimeOffTypes(string mode = "")
@@ -1118,9 +1077,7 @@ namespace BambooHrClient
                 throw new Exception("Bamboo Response does not contain data");
             }
 
-            var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
-            var errorMessage = error != null ? ": " + error.Value : string.Empty;
-            throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
+            throw new Exception($"Bamboo Response threw error code {response.StatusCode} ({response.StatusDescription}) {response.GetBambooHrErrorMessage()} in {nameof(GetTimeOffTypes)}");
         }
 
         public async Task<BambooHrTimeOffPolicy[]> GetTimeOffPolicies()
@@ -1157,9 +1114,7 @@ namespace BambooHrClient
                 throw new Exception("Bamboo Response does not contain data");
             }
 
-            var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
-            var errorMessage = error != null ? ": " + error.Value : string.Empty;
-            throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
+            throw new Exception($"Bamboo Response threw error code {response.StatusCode} ({response.StatusDescription}) {response.GetBambooHrErrorMessage()} in {nameof(GetTimeOffPolicies)}");
         }
 
         public async Task<BambooHrUser[]> GetUsers()
@@ -1193,9 +1148,7 @@ namespace BambooHrClient
                 throw new Exception("Bamboo Response does not contain data");
             }
 
-            var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
-            var errorMessage = error != null ? ": " + error.Value : string.Empty;
-            throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
+            throw new Exception($"Bamboo Response threw error code {response.StatusCode} ({response.StatusDescription}) {response.GetBambooHrErrorMessage()} in {nameof(GetUsers)}");
         }
 
         public async Task<BambooHrEmployeeChangedInfo[]> GetLastChangedInfo(DateTime lastChanged, string type = "")
@@ -1245,9 +1198,7 @@ namespace BambooHrClient
                 throw new Exception("Bamboo Response does not contain file data");
             }
 
-            var error = response.Headers.FirstOrDefault(x => x.Name == "X-BambooHR-Error-Messsage");
-            var errorMessage = error != null ? ": " + error.Value : string.Empty;
-            throw new Exception(string.Format("Bamboo Response threw error code {0} ({1}) {2}", response.StatusCode, response.StatusDescription, errorMessage));
+            throw new Exception($"Bamboo Response threw error code {response.StatusCode} ({response.StatusDescription}) {response.GetBambooHrErrorMessage()} in {nameof(GetLastChangedInfo)}");
         }
 
         private Dictionary<DateTime, int> GetDateHours(DateTime startDate, DateTime endDate, bool startHalfDay, bool endHalfDay, List<DateTime> holidays)

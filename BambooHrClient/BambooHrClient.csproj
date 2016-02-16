@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config.cs" />
+    <Compile Include="Extensions\IRestResponseExtensions.cs" />
     <Compile Include="Extensions\XElementExtensions.cs" />
     <Compile Include="Models\BambooHrRowData.cs" />
     <Compile Include="Models\BambooHrEstimate.cs" />

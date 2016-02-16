@@ -95,8 +95,8 @@ namespace BambooHrClient.Demo
             //await DisplayListFieldDetails();
             //Console.WriteLine();
 
-            await AddOrUpdateListValues(testListId);
-            Console.WriteLine();
+            //await AddOrUpdateListValues(testListId);
+            //Console.WriteLine();
 
             //await DisplayTimeOffTypes();
             //Console.WriteLine();
