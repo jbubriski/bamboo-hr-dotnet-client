@@ -89,7 +89,6 @@ namespace BambooHrClient.Models
             xElement.AddFieldValueIfNotNull("displayName", DisplayName);
             xElement.AddFieldValueIfNotNull("gender", Gender);
             xElement.AddFieldValueIfNotNull("dateOfBirth", DateOfBirth);
-            xElement.AddFieldValueIfNotNull("age", Age.ToString());
 
             xElement.AddFieldValueIfNotNull("address1", Address1);
             xElement.AddFieldValueIfNotNull("address2", Address2);
