@@ -5,6 +5,14 @@
 A .NET client for the BambooHR REST API.
 
 
+## NOTICE:
+
+**Bamboo HR recently removed support for SSLv3 and TLSv1.0, so if you're running .Net < 4.6.1, you'll need to add this line to your application somewhere, probably inside Application_Start() in your Global.asax.  Keep in mind that this is a global change to your applcation.  If there are any other calls you make to HTTPS endpoints that only support SSLv3, they will stop working.  Most services probably don't even support SSLv3 anymore anyway, [read this CloudFlare post for more information on the subject](https://blog.cloudflare.com/sslv3-support-disabled-by-default-due-to-vulnerability/).  Thanks goes to the Nifty [Nick Craver](http://nickcraver.com/) for the fix.**
+
+    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls |
+        SecurityProtocolType.Tls11 |
+        SecurityProtocolType.Tls12;
+
 ## Getting Started
 
 A **demo project** is included!
