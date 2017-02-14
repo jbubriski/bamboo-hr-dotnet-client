@@ -33,6 +33,6 @@ namespace BambooHrClient.Models
         public int Id { get; set; }
         public int TimeOffTypeId { get; set; }
         public string Name { get; set; }
-        public DateTime EffectiveDate { get; set; }
+        public DateTime? EffectiveDate { get; set; }
     }
 }
