@@ -64,7 +64,7 @@ namespace BambooHrClient
 
         private readonly string _cancelTimeOffRequestXml = @"<request>
     <status>cancelled</status>
-    <note>Request cancelled from OOO.</note>
+    <note>Request cancelled via API.</note>
 </request>";
 
         private readonly string _replaceRequestFormat = @"<request>
