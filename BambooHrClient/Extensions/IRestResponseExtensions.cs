@@ -5,7 +5,7 @@ namespace BambooHrClient
 {
     public static class IRestResponseExtensions
     {
-        private static readonly string _bambooHrErrorMessageHeaderName = "X-BambooHR-Error-Messsage";
+        private static readonly string _bambooHrErrorMessageHeaderName = "X-BambooHR-Error-Message";
 
         public static string GetBambooHrErrorMessage(this IRestResponse response)
         {
