@@ -140,8 +140,8 @@ namespace BambooHrClient
 
         public async Task<List<BambooHrEmployee>> GetEmployees(bool onlyCurrent = true)
         {
-            var onlyCurrent = onlyCurrent ? "" : "&onlyCurrent=false"; // Ignores EffectiveDate for changes, which is needed to get Dept/Div for new employees
-            var url = "/reports/custom?format=json" + onlyCurrent;
+            var onlyCurrentUrlParam = onlyCurrent ? "" : "&onlyCurrent=false"; // Ignores EffectiveDate for changes, which is needed to get Dept/Div for new employees
+            var url = "/reports/custom?format=json" + onlyCurrentUrlParam;
             var xml = GenerateUserReportRequestXml();
 
             var request = GetNewRestRequest(url, Method.POST, true);
