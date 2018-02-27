@@ -15,7 +15,7 @@ namespace BambooHrClient
 {
     public interface IBambooHrClient
     {
-        Task<List<BambooHrEmployee>> GetEmployees();
+        Task<List<BambooHrEmployee>> GetEmployees(bool onlyCurrent = true);
 
         Task<List<Dictionary<string, string>>> GetTabularData(string employeeId, BambooHrTableType tableType);
 
@@ -138,9 +138,10 @@ namespace BambooHrClient
 
         #region Employees
 
-        public async Task<List<BambooHrEmployee>> GetEmployees()
+        public async Task<List<BambooHrEmployee>> GetEmployees(bool onlyCurrent = true)
         {
-            const string url = "/reports/custom?format=json";
+            var onlyCurrent = onlyCurrent ? "" : "&onlyCurrent=false"; // Ignores EffectiveDate for changes, which is needed to get Dept/Div for new employees
+            var url = "/reports/custom?format=json" + onlyCurrent;
             var xml = GenerateUserReportRequestXml();
 
             var request = GetNewRestRequest(url, Method.POST, true);
